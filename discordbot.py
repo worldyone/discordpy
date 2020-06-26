@@ -45,28 +45,39 @@ async def info(ctx):
 
     await ctx.send(embed=embed)
 
-# @bot.command()
-# async def refer(ctx):
-#     """
-#     振り返りのために、過去に対局した対局結果をランダムに配信してくれる
+# 返信する非同期関数を定義
+async def reply(message):
+    reply = f'{message.author.mention} 呼んだ？' # 返信メッセージの作成
+    await message.channel.send(reply) # 返信メッセージを送信
 
-#     Parameters
-#     ----------
-#     ctx : ~ext.commands.Context
-#         対象の果物のマスタID。
-#     """
-#     msg = "aa"
-#     await ctx.send(msg)
+# 発言時に実行されるイベントハンドラを定義
+@bot.event
+async def on_message(message):
+    if bot.user in message.mentions: # 話しかけられたかの判定
+        await reply(message) # 返信する非同期関数を実行
 
-#     member = Guild.get_member()
-#     await ctx.send(member)
+@bot.command()
+async def refer(ctx):
+    """
+    振り返りのために、過去に対局した対局結果をランダムに配信してくれる
+
+    Parameters
+    ----------
+    ctx : ~ext.commands.Context
+        対象の果物のマスタID。
+    """
+    msg = "aa"
+    await ctx.send(msg)
+
+    # member = Guild.get_member()
+    # await ctx.send(member)
 
 
 # def pred(m):
 #     return m.author == message.author and m.channel == message.channel
 
 # try:
-#     msg = await client.wait_for('message', check=pred, timeout=60.0)
+#     msg = await bot.wait_for('message', check=pred, timeout=60.0)
 # except asyncio.TimeoutError:
 #     await channel.send('You took too long...')
 # else:
