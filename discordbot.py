@@ -66,4 +66,9 @@ async def refer(ctx):
     # member = Guild.get_member()
     # await ctx.send(member)
 
+@bot.command()
+async def aa(ctx):
+    await ctx.send(ctx.__class__.__name__)
+    await ctx.send(guild)
+
 bot.run(token)
