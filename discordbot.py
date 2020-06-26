@@ -1,3 +1,4 @@
+import discord
 from discord.ext import commands
 import os
 import traceback
@@ -44,25 +45,25 @@ async def info(ctx):
 
     await ctx.send(embed=embed)
 
-@bot.command()
-async def refer(ctx):
-    """
-    振り返りのために、過去に対局した対局結果をランダムに配信してくれる
+# @bot.command()
+# async def refer(ctx):
+#     """
+#     振り返りのために、過去に対局した対局結果をランダムに配信してくれる
 
-    Parameters
-    ----------
-    ctx : ~ext.commands.Context
-        対象の果物のマスタID。
-    """
-    msg = "aa"
-    await ctx.send(msg)
+#     Parameters
+#     ----------
+#     ctx : ~ext.commands.Context
+#         対象の果物のマスタID。
+#     """
+#     msg = "aa"
+#     await ctx.send(msg)
 
-    member = Guild.get_member()
-    await ctx.send(member)
+#     member = Guild.get_member()
+#     await ctx.send(member)
 
 
-def pred(m):
-    return m.author == message.author and m.channel == message.channel
+# def pred(m):
+#     return m.author == message.author and m.channel == message.channel
 
 # try:
 #     msg = await client.wait_for('message', check=pred, timeout=60.0)
