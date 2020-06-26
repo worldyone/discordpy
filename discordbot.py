@@ -2,12 +2,13 @@ import discord
 from discord.ext import commands
 import os
 import traceback
+GUILD_ID = "696698789989187604"
 
 bot = commands.Bot(command_prefix='/')
 token = os.environ['DISCORD_BOT_TOKEN']
 
 # get_guild
-guild = bot.get_guild("696698789989187604")
+guild = bot.get_guild(GUILD_ID)
 
 @bot.event
 async def on_ready():
@@ -30,7 +31,7 @@ async def neko(ctx):
 
 @bot.command()
 async def add(ctx, a: int, b: int):
-    await ctx.send("result is " + (a + b))
+    await ctx.send("result is " + str(a + b))
 
 @bot.command()
 async def info(ctx):
@@ -71,7 +72,8 @@ async def refer(ctx):
     msg = "aa"
     await ctx.send(msg)
 
-    await ctx.send(guild.member())
+    await ctx.send(guild.get_member())
+    await ctx.send(ctx.guild.get_member())
     # member = Guild.get_member()
     # await ctx.send(member)
 
