@@ -79,10 +79,10 @@ async def aa(ctx):
 
 @bot.command()
 async def test(ctx):
-    ctx.send("ctx.author", ctx.author)
-    ctx.send("ctx.guild.members", ctx.guild.members)
-    ctx.send("ctx.guild", ctx.guild)
-    ctx.send("ctx.user", ctx.user)
-    ctx.send("ctx.Message", ctx.message)
+    ctx.send(ctx.author)
+    ctx.send(ctx.guild.members)
+    ctx.send(ctx.guild)
+    ctx.send(ctx.user)
+    ctx.send(ctx.message)
 
 bot.run(token)
