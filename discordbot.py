@@ -1,4 +1,5 @@
 import discord
+import inspect
 from discord.ext import commands
 import os
 import traceback
@@ -27,7 +28,7 @@ async def on_command_error(ctx, error):
 
 @bot.command()
 async def neko(ctx):
-    await ctx.send('nyan')
+    await ctx.send('お兄ちゃん！お兄ちゃん！お兄ちゃん！')
 
 @bot.command()
 async def add(ctx, a: int, b: int):
@@ -68,7 +69,11 @@ async def refer(ctx):
 
 @bot.command()
 async def aa(ctx):
+    ctx.send(type(ctx))
+    for x in inspect.getmembers(ctx, inspect.ismethod):
+        ctx.send(x[0])
+
     await ctx.send(ctx.__class__.__name__)
-    await ctx.send(guild)
+    # await ctx.send(guild)
 
 bot.run(token)
