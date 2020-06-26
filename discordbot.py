@@ -72,8 +72,17 @@ async def aa(ctx):
     ctx.send(type(ctx))
     for x in inspect.getmembers(ctx, inspect.ismethod):
         ctx.send(x[0])
+        print(x[0])
 
     await ctx.send(ctx.__class__.__name__)
     # await ctx.send(guild)
+
+@bot.command()
+async def test(ctx):
+    ctx.send("ctx.author", ctx.author)
+    ctx.send("ctx.guild.members", ctx.guild.members)
+    ctx.send("ctx.guild", ctx.guild)
+    ctx.send("ctx.user", ctx.user)
+    ctx.send("ctx.Message", ctx.message)
 
 bot.run(token)
