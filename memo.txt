@@ -42,3 +42,6 @@ with open("test.png", "rb") as f:
 #     await channel.send('You took too long...')
 # else:
 #     await channel.send('You said {0.content}, {0.author}.'.format(msg))
+
+pinsを利用して、ピン留めしている問題からランダムに一問出題するのが妥当
+DB使うのは後回しでいい。
