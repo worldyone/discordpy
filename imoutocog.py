@@ -100,6 +100,7 @@ class ImoutoCog(commands.Cog):
     @commands.command()
     async def pins(self, ctx):
         """ピン留めメッセージをすべて表示する"""
+        await ctx.send("妹「これが今までのすべての問題だよ！」")
         pins = await ctx.pins()
         for pin in pins:
             message = await ctx.fetch_message(pin.id)
@@ -108,6 +109,7 @@ class ImoutoCog(commands.Cog):
     @commands.command()
     async def pins_random(self, ctx):
         """ピン留めメッセージの中からランダムで一つ表示する"""
+        await ctx.send("妹「とっておきの問題を出してあげるね！」")
         pins = await ctx.pins()
         pin = random.choice(pins)
         message = await ctx.fetch_message(pin.id)
