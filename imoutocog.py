@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import inspect
+import random
 
 
 class ImoutoCog(commands.Cog):
@@ -95,3 +96,19 @@ class ImoutoCog(commands.Cog):
         else:
             await ctx.send('Hello {0.name}... This feels familiar.'.format(member))
         self._last_member = member
+
+    @commands.command()
+    async def pins(self, ctx):
+        """ピン留めメッセージをすべて表示する"""
+        pins = await ctx.pins()
+        for pin in pins:
+            message = await ctx.fetch_message(pin.id)
+            await ctx.send(message.content)
+
+    @commands.command()
+    async def pins_random(self, ctx):
+        """ピン留めメッセージの中からランダムで一つ表示する"""
+        pins = await ctx.pins()
+        pin = random.choice(pins)
+        message = await ctx.fetch_message(pin.id)
+        await ctx.send(message.content)
