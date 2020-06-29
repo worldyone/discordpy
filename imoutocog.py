@@ -12,7 +12,7 @@ class ImoutoCog(commands.Cog):
     @commands.command()
     async def neko(self, ctx):
         """挨拶"""
-        await ctx.send('お兄ちゃん！お兄ちゃん！お兄ちゃん！')
+        await ctx.send('妹「お兄ちゃん！お兄ちゃん！お兄ちゃん！」')
 
     @commands.command()
     async def add(self, ctx, a: int, b: int):
@@ -40,7 +40,7 @@ class ImoutoCog(commands.Cog):
         # pin
 
     @commands.command()
-    async def ctx-methods(self, ctx):
+    async def ctx_methods(self, ctx):
         """ctxの持つメソッド確認"""
         ctx.send(type(ctx))
         for x in inspect.getmembers(ctx, inspect.ismethod):

@@ -42,7 +42,7 @@ def setup(bot):
         リアクションを待機するアクション
         :thumbup:してあげてね！
         """
-        await ctx.send('Send me that 👍 reaction, mate')
+        await ctx.send('妹「お兄ちゃん！私に 👍 を送って欲しいな！」')
 
         def check(reaction, user):
             return user == ctx.message.author and str(reaction.emoji) == '👍'
