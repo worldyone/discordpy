@@ -2,6 +2,20 @@ import discord
 from discord.ext import commands
 import inspect
 import random
+import sched
+import time
+
+
+def print_time():
+    print("From print time", time.time())
+
+
+def print_something():
+    print(time.time())
+    s = sched.scheduler(time.time, time.sleep)
+    s.enter(5, 1, print_time)
+    s.run()
+    print(time.time())
 
 
 class ImoutoCog(commands.Cog):
@@ -18,7 +32,7 @@ class ImoutoCog(commands.Cog):
     @commands.command()
     async def add(self, ctx, a: int, b: int):
         """引数確認用コマンド 足し算"""
-        await ctx.send("result is " + str(a + b))
+        await ctx.send(f'妹「足し算の答えはね {str(a + b)} だよ！」')
 
     @commands.command()
     async def refer(self, ctx):
@@ -30,15 +44,7 @@ class ImoutoCog(commands.Cog):
         ctx : ~ext.commands.Context
             description
         """
-        msg = "aa"
-        await ctx.send(msg)
-
-        # await ctx.send(guild.get_member())
-        await ctx.send(ctx.guild.get_member())
-        # member = Guild.get_member()
-        # await ctx.send(member)
-
-        # pin
+        pass
 
     @commands.command()
     async def ctx_methods(self, ctx):
@@ -59,7 +65,7 @@ class ImoutoCog(commands.Cog):
         await ctx.send(ctx.guild)
         await ctx.send(ctx.message)
 
-    @commands.command()
+    @commands.command(aliases=['t2'])
     async def test2(self, ctx):
         """test用コマンドその二"""
         await ctx.send(ctx.message)
@@ -114,3 +120,23 @@ class ImoutoCog(commands.Cog):
         pin = random.choice(pins)
         message = await ctx.fetch_message(pin.id)
         await ctx.send(message.content)
+
+    @commands.group()
+    async def rem(self, ctx):
+        """リマインド機能
+
+        時間を指定して登録することで、指定時間に通知を飛ばすことができる
+        サブコマンド
+        add 指定時間の登録
+        show 登録したリマインドの表示
+        """
+        if ctx.invoked_subcommand is None:
+            await ctx.send('妹「サブコマンドを入力して欲しいよっ！」')
+
+    @rem.command(name='add')
+    async def rem_add(self, ctx):
+        print_something()
+
+    @rem.command(name='show')
+    async def rem_show(self, ctx):
+        pass
