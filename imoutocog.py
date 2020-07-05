@@ -2,20 +2,6 @@ import discord
 from discord.ext import commands
 import inspect
 import random
-import sched
-import time
-
-
-def print_time():
-    print("From print time", time.time())
-
-
-def print_something():
-    print(time.time())
-    s = sched.scheduler(time.time, time.sleep)
-    s.enter(5, 1, print_time)
-    s.run()
-    print(time.time())
 
 
 class ImoutoCog(commands.Cog):
@@ -25,7 +11,7 @@ class ImoutoCog(commands.Cog):
     """
 
     @commands.command()
-    async def neko(self, ctx):
+    async def hello(self, ctx):
         """挨拶"""
         await ctx.send('妹「お兄ちゃん！お兄ちゃん！お兄ちゃん！」')
 
@@ -55,19 +41,13 @@ class ImoutoCog(commands.Cog):
             print(x[0])
 
         await ctx.send(ctx.__class__.__name__)
-        # await ctx.send(guild)
 
-    @commands.command()
+    @commands.command(aliases=['tt'])
     async def test(self, ctx):
         """test用コマンド"""
         await ctx.send(ctx.author)
         await ctx.send(ctx.guild.members)
         await ctx.send(ctx.guild)
-        await ctx.send(ctx.message)
-
-    @commands.command(aliases=['t2'])
-    async def test2(self, ctx):
-        """test用コマンドその二"""
         await ctx.send(ctx.message)
 
     @commands.command()
@@ -82,9 +62,6 @@ class ImoutoCog(commands.Cog):
         # give info about you here
         embed.add_field(name="Author", value="kanikun")
 
-        # Shows the number of servers the bot is member of.
-        # embed.add_field(name="Server count", value=f"{len(ctx.guild)}")
-
         # give users a link to invite thsi bot to their server
         embed.add_field(
             name="Invite",
@@ -92,16 +69,6 @@ class ImoutoCog(commands.Cog):
         )
 
         await ctx.send(embed=embed)
-
-    @commands.command()
-    async def hello(self, ctx, *, member: discord.Member = None):
-        """Says hello"""
-        member = member or ctx.author
-        if self._last_member is None or self._last_member.id != member.id:
-            await ctx.send('Hello {0.name}~'.format(member))
-        else:
-            await ctx.send('Hello {0.name}... This feels familiar.'.format(member))
-        self._last_member = member
 
     @commands.command()
     async def pins(self, ctx):
@@ -134,8 +101,9 @@ class ImoutoCog(commands.Cog):
             await ctx.send('妹「サブコマンドを入力して欲しいよっ！」')
 
     @rem.command(name='add')
-    async def rem_add(self, ctx):
-        print_something()
+    async def rem_add(self, ctx, target_time):
+        # datetimeList += target_time
+        pass
 
     @rem.command(name='show')
     async def rem_show(self, ctx):

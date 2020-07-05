@@ -4,12 +4,10 @@ import os
 import traceback
 import asyncio
 from imoutocog import ImoutoCog
+from kumiromicog import KumiromiCog
 
-GUILD_ID = "696698789989187604"
 
 token = os.environ['DISCORD_BOT_TOKEN']
-# get_guild
-# guild = bot.get_guild(GUILD_ID)
 
 
 class DiscordBot(commands.Bot):
@@ -40,6 +38,7 @@ def setup(bot):
     async def thumbup(ctx):
         """
         リアクションを待機するアクション
+
         :thumbup:してあげてね！
         """
         await ctx.send('妹「お兄ちゃん！私に 👍 を送って欲しいな！」')
@@ -61,6 +60,9 @@ if __name__ == '__main__':
 
     # 妹ボットの導入
     bot.add_cog(ImoutoCog(bot))
+
+    # クミロミボットの導入
+    bot.add_cog(KumiromiCog(bot))
 
     # ボット作成後処理
     setup(bot)
