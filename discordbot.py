@@ -56,7 +56,7 @@ def setup(bot):
 
 if __name__ == '__main__':
     # ボット作成
-    bot = DiscordBot(command_prefix='/')
+    bot = DiscordBot(command_prefix='e.')
 
     # 妹ボットの導入
     bot.add_cog(ImoutoCog(bot))

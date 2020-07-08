@@ -87,24 +87,3 @@ class ImoutoCog(commands.Cog):
         pin = random.choice(pins)
         message = await ctx.fetch_message(pin.id)
         await ctx.send(message.content)
-
-    @commands.group()
-    async def rem(self, ctx):
-        """リマインド機能
-
-        時間を指定して登録することで、指定時間に通知を飛ばすことができる
-        サブコマンド
-        add 指定時間の登録
-        show 登録したリマインドの表示
-        """
-        if ctx.invoked_subcommand is None:
-            await ctx.send('妹「サブコマンドを入力して欲しいよっ！」')
-
-    @rem.command(name='add')
-    async def rem_add(self, ctx, target_time):
-        # datetimeList += target_time
-        pass
-
-    @rem.command(name='show')
-    async def rem_show(self, ctx):
-        pass
