@@ -1,3 +1,4 @@
+import discord
 from discord.ext import tasks, commands
 from datetime import datetime
 from datetime import timedelta
@@ -25,6 +26,9 @@ class KumiromiCog(commands.Cog):
     # 大会種目
     events = ['囲碁', '将棋', 'オセロ']
 
+    # 固定のセリフ
+    TOMORROW_MESSAGE = "そんな装備で大丈夫か？"
+
     def format_datetime(self, date, time):
         """日付と時刻からdatetime型を返す
 
@@ -35,6 +39,11 @@ class KumiromiCog(commands.Cog):
         if date == 'today':  # 日付が today だったら、今日の日付に変換する
             n = datetime.now()
             date = datetime(n.year, n.month, n.day)
+            date = datetime.strftime(date, '%Y-%m-%d')
+
+        if date == 'nextweek':  # 日付が nextweek だったら、来週の日付に変換する
+            n = datetime.now()
+            date = datetime(n.year, n.month, n.day + 7)
             date = datetime.strftime(date, '%Y-%m-%d')
 
         # セットする時刻を整形
@@ -59,7 +68,7 @@ class KumiromiCog(commands.Cog):
 
         now = self.round_now()
         if now in self.time_and_memos.keys():
-            await ctx.send(self.time_and_memos[now])
+            await ctx.send(self.time_and_memos.pop(now))
 
     @commands.group(aliases=['rem'])
     async def reminder(self, ctx):
@@ -67,18 +76,35 @@ class KumiromiCog(commands.Cog):
 
         時間を指定して登録することで、指定時間に通知を飛ばすことができる
         サブコマンド
-        set 指定時間の登録
-        del リマインドの削除
+        start リマインド通知機能の開始
+        set リマインドの登録
         show 登録したリマインドの表示
+        del リマインドの削除
         """
         if ctx.invoked_subcommand is None:
             await ctx.send('クミロミ「…？お願いだからサブコマンドを入力してね…？」')
+            embed = discord.Embed(
+                title="リマインド機能",
+                description="リマインド機能の使い方です。"
+            )
+
+            embed.add_field(name="start", value="リマインド通知機能の開始")
+            embed.add_field(name="i.e.", value="e.rem start")
+            embed.add_field(name="set", value="リマインドの登録")
+            embed.add_field(
+                name="i.e.", value="e.rem set 2020-01-01 20:00 It's TRIBOARDIAN!!")
+            embed.add_field(name="show", value="登録したリマインドの表示")
+            embed.add_field(name="i.e.", value="e.rem show")
+            embed.add_field(name="del", value="リマインドの削除")
+            embed.add_field(name="i.e.", value="e.rem del 2020-01-01 20:00")
+
+            await ctx.send(embed=embed)
 
     @reminder.command(aliases=['start'])
     async def reminder_start(self, ctx):
         """リマインド機能を開始する"""
         self.reminder_loop.start(ctx)
-        await ctx.send("クミロミ「分かった…君に時を告げるよ…」")
+        await ctx.send("クミロミ「分かった…君に想いを告げるよ…」")
 
     @reminder.command(aliases=['set', 'add'])
     async def reminder_set(self, ctx, date, time, memo):
@@ -88,7 +114,7 @@ class KumiromiCog(commands.Cog):
         self.time_and_memos[set_datetime] = memo
         await ctx.send("クミロミ「君の未来への想いを受け取ったよ…」 " + "時刻：" + str(set_datetime) + "  内容：" + memo)
 
-    @reminder.command(aliases=['show', 'look'])
+    @reminder.command(aliases=['show', 'look', 'list'])
     async def reminder_show(self, ctx):
         """リマインドの一覧を見せる"""
         str_all_time_and_memos = ""
@@ -96,19 +122,23 @@ class KumiromiCog(commands.Cog):
             await ctx.send("クミロミ「これが君たちのこれからの想いだよ…」")
             for k, v in self.time_and_memos.items():
                 str_all_time_and_memos += str(k) + ", " + str(v)
-                await ctx.send(str_all_time_and_memos)
+            await ctx.send(str_all_time_and_memos)
         else:
             await ctx.send("クミロミ「これから想いを綴っていこうね…？」")
 
-    @reminder.command(aliases=['del'])
+    @reminder.command(aliases=['del', 'delete', 'remove'])
     async def reminder_delete(self, ctx, date, time):
+        """リマインドを削除する
+
+        todo: 番号で削除できるようにする
+        """
         set_datetime = self.format_datetime(date, time)
 
         if set_datetime in self.time_and_memos.keys():
             self.time_and_memos.remove(set_datetime)
             await ctx.send("クミロミ「消した…消しちゃったね…、悲しいね…」")
 
-    @commands.group(aliases=['tour'])
+    @commands.group(aliases=['tour', 'tt'])
     async def tournament(self, ctx):
         """トーナメント機能
 
@@ -116,13 +146,30 @@ class KumiromiCog(commands.Cog):
         """
         if ctx.invoked_subcommand is None:
             await ctx.send('クミロミ「…？お願いだからサブコマンドを入力してね…？')
+            embed = discord.Embed(
+                title="トーナメント機能",
+                description="トーナメント機能の使い方です。"
+            )
+
+            embed.add_field(name="start", value="トーナメントの開始")
+            embed.add_field(name="i.e.", value="e.tour start")
+            embed.add_field(name="set", value="トーナメントの設定")
+            embed.add_field(name="i.e.", value="e.rem set")
+            embed.add_field(name="member", value="登録したメンバの表示・設定")
+            embed.add_field(name="i.e.", value="e.rem member")
+            embed.add_field(name="playtime", value="トーナメントの対局時間の設定")
+            embed.add_field(name="i.e.", value="e.rem playtime 15")
+            embed.add_field(name="breaktime", value="トーナメントの休憩時間の設定")
+            embed.add_field(name="i.e.", value="e.rem breaktime 10")
+
+            await ctx.send(embed=embed)
 
     @tournament.command(aliases=['start'])
     async def tournament_start(self, ctx):
         player_comb = list(itertools.combinations(self.members, 2))  # 対局総組み合わせ
 
         now = self.round_now()
-        targettime = now + timedelta(minutes=self.starttime)
+        targettime = now + timedelta(minutes=self.starttime)  # 開始時間のセット
 
         for pl1, pl2 in player_comb:  # 対局者2人ずつ
             for event in self.events:  # 全種目
@@ -133,29 +180,61 @@ class KumiromiCog(commands.Cog):
             # 2人の全種目対戦終了して、休憩タイム
             targettime += timedelta(self.breaktime)
 
-        await ctx.send("クミロミ「さぁ、僕に君たちの力を見せて…欲しいな…」")
+        # 大会終了後に、次回大会を実施するかどうか聞くリマインド
+        memo = "クミロミ「今度もまた一緒に遊んでもいい……かな……？」" + "\n" + \
+            "e.rem set" + targettime + " " + self.TOMORROW_MESSAGE
+        self.time_and_memos[targettime] = memo
+
+        await ctx.send("クミロミ「闘いの準備が整ったよ…。さぁ、君たちの力を僕に見せて……欲しいな…」")
 
     @tournament.command(aliases=['set', 'show'])
     async def tournament_set(self, ctx):
         """トーナメントの設定・表示"""
         if ctx.invoked_subcommand is None:
-            await ctx.send("クミロミ「いまの設定はこんな感じ…だね…」")
+            await ctx.send("クミロミ「いまの設定はこんな感じ……だね…」")
             await ctx.send("members:" + " ".join(self.members))
             await ctx.send("playtime:" + str(self.playtime))
             await ctx.send("breaktime:" + str(self.breaktime))
 
-    @ tournament.group(aliases=['member'])
+    @tournament.command(aliases=['playtime'])
+    async def tournament_playtime(self, ctx, time):
+        """トーナメントの設定・対局時間の設定"""
+        self.playtime = time
+        await ctx.send("クミロミ「遊ぶ時間を" + str(self.playtime) + "に設定したよ…？」")
+
+    @tournament.command(aliases=['breaktime'])
+    async def tournament_breaktime(self, ctx, time):
+        """トーナメントの設定・休憩時間の設定"""
+        self.breaktime = time
+        await ctx.send("クミロミ「休憩時間を" + str(self.breaktime) + "に設定したよ…？」")
+
+    @tournament.group(aliases=['member'])
     async def tournament_member(self, ctx):
         """トーナメントの設定・メンバ"""
+        if ctx.invoked_subcommand is None:
+            await ctx.send('クミロミ「…？お願いだからサブコマンドを入力してね…？')
+            embed = discord.Embed(
+                title="メンバ設定機能",
+                description="トーナメントのメンバ設定機能の使い方です。"
+            )
+
+            embed.add_field(name="add", value="メンバの追加")
+            embed.add_field(name="i.e.", value="e.tour member add Taro")
+            embed.add_field(name="remove", value="メンバの脱退")
+            embed.add_field(name="i.e.", value="e.tour member remove Taro")
+            embed.add_field(name="shuffle", value="メンバの順番をシャッフル")
+            embed.add_field(name="i.e.", value="e.tour member shuffle")
+
+            await ctx.send(embed=embed)
         pass
 
-    @ tournament_member.command(aliases=['add'])
+    @tournament_member.command(aliases=['add'])
     async def tournament_member_add(self, ctx, name):
         """トーナメントの設定・メンバーの追加"""
         self.members.append(name)
         await ctx.send("クミロミ「ふふ…" + name + "というんだね…。君も僕の信者になる…？」")
 
-    @ tournament_member.command(aliases=['remove'])
+    @tournament_member.command(aliases=['remove'])
     async def tournament_member_remove(self, ctx, name):
         """トーナメントの設定・メンバーの削除"""
         if name in self.members:
@@ -164,7 +243,7 @@ class KumiromiCog(commands.Cog):
         else:
             await ctx.send("クミロミ「そんな人、元から居ないよ…？」")
 
-    @ tournament_member.command(aliases=['shuffle'])
+    @tournament_member.command(aliases=['shuffle'])
     async def tournament_member_shuffle(self, ctx):
         """メンバの順番をシャッフルする
 
@@ -172,15 +251,3 @@ class KumiromiCog(commands.Cog):
         random.shuffle(self.members)
         await ctx.send("クミロミ「メンバの順番…これでバラバラだよ…」")
         await ctx.send("members:" + " ".join(self.members))
-
-    @ tournament.command(aliases=['playtime'])
-    async def tournament_playtime(self, ctx, time):
-        """トーナメントの設定・対局時間の設定"""
-        self.playtime = time
-        await ctx.send("クミロミ「遊ぶ時間を" + str(self.playtime) + "に設定したよ…？」")
-
-    @ tournament.command(aliases=['breaktime'])
-    async def tournament_breaktime(self, ctx, time):
-        """トーナメントの設定・休憩時間の設定"""
-        self.breaktime = time
-        await ctx.send("クミロミ「休憩時間を" + str(self.breaktime) + "に設定したよ…？」")

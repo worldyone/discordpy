@@ -18,7 +18,7 @@ class ImoutoCog(commands.Cog):
     @commands.command()
     async def add(self, ctx, a: int, b: int):
         """引数確認用コマンド 足し算"""
-        await ctx.send(f'妹「足し算の答えはね {str(a + b)} だよ！」')
+        await ctx.send(f'妹「{a}＋{b}の答えはね、 {str(a + b)} だよ！」')
 
     @commands.command()
     async def refer(self, ctx):
@@ -30,6 +30,7 @@ class ImoutoCog(commands.Cog):
         ctx : ~ext.commands.Context
             description
         """
+        # todo 未実装
         pass
 
     @commands.command()
@@ -42,7 +43,7 @@ class ImoutoCog(commands.Cog):
 
         await ctx.send(ctx.__class__.__name__)
 
-    @commands.command(aliases=['tt'])
+    @commands.command()
     async def test(self, ctx):
         """test用コマンド"""
         await ctx.send(ctx.author)
@@ -55,18 +56,12 @@ class ImoutoCog(commands.Cog):
         """ボット紹介・解説"""
         embed = discord.Embed(
             title="elona-bot",
-            description="妹「お兄ちゃんのために私頑張るよっ！」",
+            description="妹「お兄ちゃんのために私、頑張るよっ！」",
             color=0xeee657
         )
 
         # give info about you here
         embed.add_field(name="Author", value="kanikun")
-
-        # give users a link to invite thsi bot to their server
-        embed.add_field(
-            name="Invite",
-            value="[Invite link](<insert your OAuth invitation link here>)"
-        )
 
         await ctx.send(embed=embed)
 
