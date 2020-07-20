@@ -173,7 +173,8 @@ class KumiromiCog(commands.Cog):
 
         for pl1, pl2 in player_comb:  # 対局者2人ずつ
             for event in self.events:  # 全種目
-                memo = str(pl1) + "と" + str(pl2) + "の" + event + "の対局開始時間です。"
+                memo = "@" + str(pl1) + "と" + "@" + str(pl2) + \
+                    "の " + event + " の対局開始時間です。"
                 self.time_and_memos[targettime] = memo
                 targettime += timedelta(minutes=self.playtime)
 
