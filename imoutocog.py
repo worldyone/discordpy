@@ -21,6 +21,24 @@ class ImoutoCog(commands.Cog):
         await ctx.send(f'妹「{a}＋{b}の答えはね、 {str(a + b)} だよ！」')
 
     @commands.command()
+    async def roll(self, ctx, dice: str):
+        """ダイスロール"""
+        try:
+            rolls, surfices = map(int, dice.split("d"))
+        except Exception:
+            await ctx.send("NdNの形式でサイコロを振ってね！お兄ちゃん！\ni.e. 1d6で六面ダイスを一回振ります。")
+            return
+
+        pips = [random.randint(1, surfices) for _ in range(rolls)]
+        await ctx.send('(コロコロー)お兄ちゃん！サイコロいっぱい振るよ！')
+        await ctx.send(*pips, "sum =", sum(pips))
+
+    @commands.command()
+    async def choose(self, ctx, *choices: str):
+        """引数からランダムで一つ選ぶ"""
+        await ctx.send(random.choise(choices))
+
+    @commands.command()
     async def refer(self, ctx):
         """
         振り返りのために、過去に対局した対局結果をランダムに配信してくれる

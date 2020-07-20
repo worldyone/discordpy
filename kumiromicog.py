@@ -27,7 +27,7 @@ class KumiromiCog(commands.Cog):
     events = ['囲碁', '将棋', 'オセロ']
 
     # 固定のセリフ
-    TOMORROW_MESSAGE = "そんな装備で大丈夫か？"
+    REMIND_MESSAGE_1 = "そんな装備で大丈夫か？"
 
     def format_datetime(self, date, time):
         """日付と時刻からdatetime型を返す
@@ -182,12 +182,12 @@ class KumiromiCog(commands.Cog):
 
         # 大会終了後に、次回大会を実施するかどうか聞くリマインド
         memo = "クミロミ「今度もまた一緒に遊んでもいい……かな……？」" + "\n" + \
-            "e.rem set" + targettime + " " + self.TOMORROW_MESSAGE
+            "e.rem set" + targettime + " " + self.REMIND_MESSAGE_1
         self.time_and_memos[targettime] = memo
 
         await ctx.send("クミロミ「闘いの準備が整ったよ…。さぁ、君たちの力を僕に見せて……欲しいな…」")
 
-    @tournament.command(aliases=['set', 'show'])
+    @tournament.command(aliases=['set', 'show', 'look', 'list'])
     async def tournament_set(self, ctx):
         """トーナメントの設定・表示"""
         if ctx.invoked_subcommand is None:
@@ -250,4 +250,4 @@ class KumiromiCog(commands.Cog):
         トーナメント開始前に実施する想定"""
         random.shuffle(self.members)
         await ctx.send("クミロミ「メンバの順番…これでバラバラだよ…」")
-        await ctx.send("members:" + " ".join(self.members))
+        await ctx.send("members:\n" + "\n  ".join(self.members))

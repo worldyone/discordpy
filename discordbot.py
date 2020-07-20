@@ -64,7 +64,7 @@ if __name__ == '__main__':
     # クミロミボットの導入
     bot.add_cog(KumiromiCog(bot))
 
-    # ボット作成後処理
+    # ボット実行前処理
     setup(bot)
 
     # ボット実行
