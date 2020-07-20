@@ -82,21 +82,19 @@ class KumiromiCog(commands.Cog):
         del リマインドの削除
         """
         if ctx.invoked_subcommand is None:
-            await ctx.send('クミロミ「…？お願いだからサブコマンドを入力してね…？」')
             embed = discord.Embed(
                 title="リマインド機能",
                 description="リマインド機能の使い方です。"
             )
 
-            embed.add_field(name="start", value="リマインド通知機能の開始")
-            embed.add_field(name="i.e.", value="e.rem start")
-            embed.add_field(name="set", value="リマインドの登録")
             embed.add_field(
-                name="i.e.", value="e.rem set 2020-01-01 20:00 It's TRIBOARDIAN!!")
-            embed.add_field(name="show", value="登録したリマインドの表示")
-            embed.add_field(name="i.e.", value="e.rem show")
-            embed.add_field(name="del", value="リマインドの削除")
-            embed.add_field(name="i.e.", value="e.rem del 2020-01-01 20:00")
+                name="start", value="リマインド通知機能の開始\n e.rem start", inline=False)
+            embed.add_field(
+                name="set", value="リマインドの登録\n e.rem set 2020-01-01 20:00 It's TRIBOARDIAN!!", inline=False)
+            embed.add_field(
+                name="show", value="登録したリマインドの表示\n e.rem show", inline=False)
+            embed.add_field(
+                name="del", value="リマインドの削除\n e.rem del 2020-01-01 20:00", inline=False)
 
             await ctx.send(embed=embed)
 
@@ -107,12 +105,12 @@ class KumiromiCog(commands.Cog):
         await ctx.send("クミロミ「分かった…君に想いを告げるよ…」")
 
     @reminder.command(aliases=['set', 'add'])
-    async def reminder_set(self, ctx, date, time, memo):
+    async def reminder_set(self, ctx, date, time, *memo: str):
         """リマインドをセットする"""
         set_datetime = self.format_datetime(date, time)
 
-        self.time_and_memos[set_datetime] = memo
-        await ctx.send("クミロミ「君の未来への想いを受け取ったよ…」 " + "時刻：" + str(set_datetime) + "  内容：" + memo)
+        self.time_and_memos[set_datetime] = " ".join(memo)
+        await ctx.send("クミロミ「君の未来への想いを受け取ったよ…」 " + "時刻：" + str(set_datetime) + "  内容：" + " ".join(memo))
 
     @reminder.command(aliases=['show', 'look', 'list'])
     async def reminder_show(self, ctx):
@@ -145,22 +143,21 @@ class KumiromiCog(commands.Cog):
         メンバと時間の設定をすることで、大会用のリマインドを発行する
         """
         if ctx.invoked_subcommand is None:
-            await ctx.send('クミロミ「…？お願いだからサブコマンドを入力してね…？')
             embed = discord.Embed(
                 title="トーナメント機能",
                 description="トーナメント機能の使い方です。"
             )
 
-            embed.add_field(name="start", value="トーナメントの開始")
-            embed.add_field(name="i.e.", value="e.tour start")
-            embed.add_field(name="set", value="トーナメントの設定")
-            embed.add_field(name="i.e.", value="e.rem set")
-            embed.add_field(name="member", value="登録したメンバの表示・設定")
-            embed.add_field(name="i.e.", value="e.rem member")
-            embed.add_field(name="playtime", value="トーナメントの対局時間の設定")
-            embed.add_field(name="i.e.", value="e.rem playtime 15")
-            embed.add_field(name="breaktime", value="トーナメントの休憩時間の設定")
-            embed.add_field(name="i.e.", value="e.rem breaktime 10")
+            embed.add_field(
+                name="start", value="トーナメントの開始\n e.tour start", inline=False)
+            embed.add_field(
+                name="set", value="トーナメントの設定\n e.rem set", inline=False)
+            embed.add_field(
+                name="member", value="登録したメンバの表示・設定\n e.rem member", inline=False)
+            embed.add_field(name="playtime",
+                            value="トーナメントの対局時間の設定\n e.rem playtime 15", inline=False)
+            embed.add_field(name="breaktime",
+                            value="トーナメントの休憩時間の設定\n e.rem breaktime 10", inline=False)
 
             await ctx.send(embed=embed)
 
@@ -219,12 +216,12 @@ class KumiromiCog(commands.Cog):
                 description="トーナメントのメンバ設定機能の使い方です。"
             )
 
-            embed.add_field(name="add", value="メンバの追加")
-            embed.add_field(name="i.e.", value="e.tour member add Taro")
-            embed.add_field(name="remove", value="メンバの脱退")
-            embed.add_field(name="i.e.", value="e.tour member remove Taro")
-            embed.add_field(name="shuffle", value="メンバの順番をシャッフル")
-            embed.add_field(name="i.e.", value="e.tour member shuffle")
+            embed.add_field(
+                name="add", value="メンバの追加\n e.tour member add Taro", inline=False)
+            embed.add_field(
+                name="remove", value="メンバの脱退\n e.tour member remove Taro", inline=False)
+            embed.add_field(
+                name="shuffle", value="メンバの順番をシャッフル\n e.tour member shuffle", inline=False)
 
             await ctx.send(embed=embed)
         pass
