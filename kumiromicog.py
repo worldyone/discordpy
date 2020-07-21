@@ -13,7 +13,7 @@ class KumiromiCog(commands.Cog):
     リマインド機能
     """
 
-    # リマインドの「時間」と「メモ」
+    # リマインドの「時間: datetime(YYYY-MM-DD HH:MM)」と「メモ: str」
     # 同一時間に２つ以上のメモはない想定
     time_and_memos = {}
 
@@ -28,6 +28,9 @@ class KumiromiCog(commands.Cog):
 
     # 固定のセリフ
     REMIND_MESSAGE_1 = "そんな装備で大丈夫か？"
+
+    # リマインダー用変数
+    loop_flag = True
 
     def format_datetime(self, date, time):
         """日付と時刻からdatetime型を返す
@@ -66,9 +69,10 @@ class KumiromiCog(commands.Cog):
     async def reminder_loop(self, ctx):
         """リマインドのメインループ処理"""
 
-        now = self.round_now()
-        if now in self.time_and_memos.keys():
-            await ctx.send(self.time_and_memos.pop(now))
+        if self.loop_flag:
+            now = self.round_now()
+            if now in self.time_and_memos.keys():
+                await ctx.send(self.time_and_memos.pop(now))
 
     @commands.group(aliases=['rem'])
     async def reminder(self, ctx):
@@ -77,6 +81,7 @@ class KumiromiCog(commands.Cog):
         時間を指定して登録することで、指定時間に通知を飛ばすことができる
         サブコマンド
         start リマインド通知機能の開始
+        stop リマインド通知機能の停止
         set リマインドの登録
         show 登録したリマインドの表示
         del リマインドの削除
@@ -102,7 +107,14 @@ class KumiromiCog(commands.Cog):
     async def reminder_start(self, ctx):
         """リマインド機能を開始する"""
         self.reminder_loop.start(ctx)
+        self.loop_flag = True
         await ctx.send("クミロミ「分かった…君に想いを告げるよ…」")
+
+    @reminder.command(aliases=['stop'])
+    async def reminder_stop(self, ctx):
+        """リマインド機能を停止する"""
+        self.loop_flag = False
+        await ctx.send("クミロミ「うん…一旦休憩するね…？」")
 
     @reminder.command(aliases=['set', 'add'])
     async def reminder_set(self, ctx, date, time, *memo: str):
@@ -180,7 +192,9 @@ class KumiromiCog(commands.Cog):
 
         # 大会終了後に、次回大会を実施するかどうか聞くリマインド
         memo = "クミロミ「今度もまた一緒に遊んでもいい……かな……？」" + "\n" + \
-            "e.rem set" + targettime + " " + self.REMIND_MESSAGE_1
+            "e.rem set" + \
+            datetime.strftime(targettime, '%Y-%m-%d %H:%M') + \
+            " " + self.REMIND_MESSAGE_1
         self.time_and_memos[targettime] = memo
 
         await ctx.send("クミロミ「闘いの準備が整ったよ…。さぁ、君たちの力を僕に見せて……欲しいな…」")
