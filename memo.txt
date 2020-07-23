@@ -1,4 +1,3 @@
-
 DiscordのBot
 ちょっと作成してみたいな。今すぐはちょっと時間がないので、覚えておきたい。
 ・不定期のリマインダー機能、refer
@@ -7,6 +6,7 @@ DiscordのBot
     一ヶ月毎ぐらいに回数・基準の設定をしておき、それに対する進捗率を言ってくれる
 ・クイズ機能、quiz
     問題集をプレイできる、例えば次の一手集などを定期的にランダムに配信する
+
 Botのキャラクター案
 ・ロミアス、goal機能
 目標の進捗をちゃんと達成できた場合「そんなに生き急いでどうしたんだい？」
@@ -16,32 +16,6 @@ Botのキャラクター案
 ・クミロミ、refer機能
 ランダムで過去の対局結果を配信する時「ここに過去があるよ…、一緒にみよう？」
 ランダムなタイミング「僕は君のことを信じているよ…、だから君も僕のことを信じていると信じてもいいよね？」
-
-
-# ローカルにあるファイルをアイコンにする
-with open("test.png", "rb") as f:
-    await guild.edit(icon=f.getvalue())
-
-# # 返信する非同期関数を定義
-# async def reply(message):
-#     reply = f'{message.author.mention} 呼んだ？' # 返信メッセージの作成
-#     await message.channel.send(reply) # 返信メッセージを送信
-
-# # 発言時に実行されるイベントハンドラを定義
-# @bot.event
-# async def on_message(message):
-#     if bot.user in message.mentions: # 話しかけられたかの判定
-#         await reply(message) # 返信する非同期関数を実行
-
-# def pred(m):
-#     return m.author == message.author and m.channel == message.channel
-
-# try:
-#     msg = await bot.wait_for('message', check=pred, timeout=60.0)
-# except asyncio.TimeoutError:
-#     await channel.send('You took too long...')
-# else:
-#     await channel.send('You said {0.content}, {0.author}.'.format(msg))
 
 pinsを利用して、ピン留めしている問題からランダムに一問出題するのが妥当
 DB使うのは後回しでいい。
@@ -57,10 +31,7 @@ botセリフ
 ロミアスの妹「どうして喋っているのかしら？許可していませんことよ」
 ロミアスの妹「ﾁｯ (邪魔そうな目でこちらを見ている)」
 
-/tournament
-/ref
-/rem 時間　メモ
-
+クミロミ、トーナメント開始のセリフ
 君たちの対局楽しみにしてるよ…
 ずっと見守ってるよ…？
 みんな頑張って…、みんな偉いな…
@@ -70,12 +41,10 @@ botセリフ
 
 
 ステータスの変更
-リマインド処理に関数渡せるようにしたいな
+トライボーディアン対戦中は「トライボーディアンをプレイ中」と表示した方がらしいかな。
 
 キャラクター案
 らーラララさん
-
-doctest
 
 partialという関数使えば、上手くリマインド処理に関数渡せそう。
 asyncioのtaskについて知りたい

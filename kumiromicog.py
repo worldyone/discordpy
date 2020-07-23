@@ -32,7 +32,7 @@ class KumiromiCog(commands.Cog):
     # リマインダー用変数
     loop_flag = True
 
-    def format_datetime(self, date, time):
+    def format_datetime(self, date: str, time: str):
         """日付と時刻からdatetime型を返す
 
         date: string YYYY-MM-DD
@@ -97,6 +97,8 @@ class KumiromiCog(commands.Cog):
             embed.add_field(
                 name="set", value="リマインドの登録\n e.rem set 2020-01-01 20:00 It's TRIBOARDIAN!!", inline=False)
             embed.add_field(
+                name="stop", value="リマインド通知機能の停止\n e.rem stop", inline=False)
+            embed.add_field(
                 name="show", value="登録したリマインドの表示\n e.rem show", inline=False)
             embed.add_field(
                 name="del", value="リマインドの削除\n e.rem del 2020-01-01 20:00", inline=False)
@@ -117,7 +119,7 @@ class KumiromiCog(commands.Cog):
         await ctx.send("クミロミ「うん…一旦休憩するね…？」")
 
     @reminder.command(aliases=['set', 'add'])
-    async def reminder_set(self, ctx, date, time, *memo: str):
+    async def reminder_set(self, ctx, date: str, time: str, *memo: str):
         """リマインドをセットする"""
         set_datetime = self.format_datetime(date, time)
 
@@ -137,7 +139,7 @@ class KumiromiCog(commands.Cog):
             await ctx.send("クミロミ「これから想いを綴っていこうね…？」")
 
     @reminder.command(aliases=['del', 'delete', 'remove'])
-    async def reminder_delete(self, ctx, date, time):
+    async def reminder_delete(self, ctx, date: str, time: str):
         """リマインドを削除する
 
         todo: 番号で削除できるようにする
@@ -209,13 +211,13 @@ class KumiromiCog(commands.Cog):
             await ctx.send("breaktime:" + str(self.breaktime))
 
     @tournament.command(aliases=['playtime'])
-    async def tournament_playtime(self, ctx, time):
+    async def tournament_playtime(self, ctx, time: int):
         """トーナメントの設定・対局時間の設定"""
         self.playtime = time
         await ctx.send("クミロミ「遊ぶ時間を" + str(self.playtime) + "に設定したよ…？」")
 
     @tournament.command(aliases=['breaktime'])
-    async def tournament_breaktime(self, ctx, time):
+    async def tournament_breaktime(self, ctx, time: int):
         """トーナメントの設定・休憩時間の設定"""
         self.breaktime = time
         await ctx.send("クミロミ「休憩時間を" + str(self.breaktime) + "に設定したよ…？」")
@@ -241,13 +243,13 @@ class KumiromiCog(commands.Cog):
         pass
 
     @tournament_member.command(aliases=['add'])
-    async def tournament_member_add(self, ctx, name):
+    async def tournament_member_add(self, ctx, name: str):
         """トーナメントの設定・メンバーの追加"""
         self.members.append(name)
         await ctx.send("クミロミ「ふふ…" + name + "というんだね…。君も僕の信者になる…？」")
 
     @tournament_member.command(aliases=['remove'])
-    async def tournament_member_remove(self, ctx, name):
+    async def tournament_member_remove(self, ctx, name: str):
         """トーナメントの設定・メンバーの削除"""
         if name in self.members:
             self.members.remove(name)
