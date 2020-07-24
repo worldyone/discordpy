@@ -206,7 +206,7 @@ class KumiromiCog(commands.Cog):
         self.time_and_memos[targettime] = memo
 
         await ctx.send("クミロミ「闘いの準備が整ったよ…。さぁ、君たちの力を僕に見せて……欲しいな…」")
-        await self.reminder_show()
+        await self.reminder_show(ctx)
 
     @tournament.command(aliases=['set', 'show', 'look', 'list'])
     async def tournament_set(self, ctx):
