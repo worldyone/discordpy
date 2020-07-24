@@ -2,6 +2,7 @@ import discord
 from discord.ext import tasks, commands
 from datetime import datetime
 from datetime import timedelta
+from datetime import timezone
 import random
 import itertools
 
@@ -56,9 +57,9 @@ class KumiromiCog(commands.Cog):
         return set_datetime
 
     def round_now(self):
-        """現在の時刻をdatetime型YYYY-MM-DD HH:MMで返す"""
+        """現在の日本時刻をdatetime型YYYY-MM-DD HH:MMで返す"""
 
-        n = datetime.now()
+        n = datetime.now(timezone(timedelta(hours=9)))  # 日本時刻を指定して取得
         now = datetime(n.year, n.month, n.day, n.hour, n.minute)
         return now
 
@@ -150,6 +151,11 @@ class KumiromiCog(commands.Cog):
             self.time_and_memos.remove(set_datetime)
             await ctx.send("クミロミ「消した…消しちゃったね…、悲しいね…」")
 
+    @reminder.command(aliases=['all delete'])
+    async def reminder_all_delete(self, ctx):
+        """リマインドをすべて削除する"""
+        self.time_and_memos.clear()
+
     @commands.group(aliases=['tour', 'tt'])
     async def tournament(self, ctx):
         """トーナメント機能
@@ -184,22 +190,23 @@ class KumiromiCog(commands.Cog):
 
         for pl1, pl2 in player_comb:  # 対局者2人ずつ
             for event in self.events:  # 全種目
-                memo = "@" + str(pl1) + "と" + "@" + str(pl2) + \
+                memo = "@" + str(pl1) + "と" + " @" + str(pl2) + \
                     "の " + event + " の対局開始時間です。"
                 self.time_and_memos[targettime] = memo
                 targettime += timedelta(minutes=self.playtime)
 
             # 2人の全種目対戦終了して、休憩タイム
-            targettime += timedelta(self.breaktime)
+            targettime += timedelta(minutes=self.breaktime)
 
         # 大会終了後に、次回大会を実施するかどうか聞くリマインド
         memo = "クミロミ「今度もまた一緒に遊んでもいい……かな……？」" + "\n" + \
-            "e.rem set" + \
+            "e.rem set " + \
             datetime.strftime(targettime, '%Y-%m-%d %H:%M') + \
             " " + self.REMIND_MESSAGE_1
         self.time_and_memos[targettime] = memo
 
         await ctx.send("クミロミ「闘いの準備が整ったよ…。さぁ、君たちの力を僕に見せて……欲しいな…」")
+        await self.reminder_show()
 
     @tournament.command(aliases=['set', 'show', 'look', 'list'])
     async def tournament_set(self, ctx):
@@ -264,4 +271,4 @@ class KumiromiCog(commands.Cog):
         トーナメント開始前に実施する想定"""
         random.shuffle(self.members)
         await ctx.send("クミロミ「メンバの順番…これでバラバラだよ…」")
-        await ctx.send("members:\n" + "\n  ".join(self.members))
+        await ctx.send("members:\n  " + "\n  ".join(self.members))
