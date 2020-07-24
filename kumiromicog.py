@@ -190,8 +190,8 @@ class KumiromiCog(commands.Cog):
 
         for pl1, pl2 in player_comb:  # 対局者2人ずつ
             for event in self.events:  # 全種目
-                memo = "@" + str(pl1) + "と" + " @" + str(pl2) + \
-                    "の " + event + " の対局開始時間です。"
+                memo = str(pl1) + " と " + str(pl2) + \
+                    " の " + event + " の対局開始時間です。"
                 self.time_and_memos[targettime] = memo
                 targettime += timedelta(minutes=self.playtime)
 
@@ -199,7 +199,8 @@ class KumiromiCog(commands.Cog):
             targettime += timedelta(minutes=self.breaktime)
 
         # 大会終了後に、次回大会を実施するかどうか聞くリマインド
-        memo = "クミロミ「今度もまた一緒に遊んでもいい……かな……？」" + "\n" + \
+        memo = "クミロミ「大会よく頑張ったね……。とても有意義な時間だったよ。」\n" + \
+            "クミロミ「今度もまた一緒に遊んでもいい……かな……？」\n" + \
             "e.rem set " + \
             datetime.strftime(targettime, '%Y-%m-%d %H:%M') + \
             " " + self.REMIND_MESSAGE_1
