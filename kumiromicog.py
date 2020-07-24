@@ -69,8 +69,6 @@ class KumiromiCog(commands.Cog):
     async def reminder_loop(self, ctx):
         """リマインドのメインループ処理"""
 
-        await ctx.send("loop_flag", self.loop_flag)
-
         if self.loop_flag:
             now = self.round_now()
             if now in self.time_and_memos.keys():
