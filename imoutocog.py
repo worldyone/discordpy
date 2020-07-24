@@ -17,7 +17,7 @@ class ImoutoCog(commands.Cog):
 
     @commands.command()
     async def add(self, ctx, a: int, b: int):
-        """引数確認用コマンド 足し算"""
+        """引数確認用コマンド 足し算 i.e. e.add 1 2"""
         await ctx.send(f'妹「{a}＋{b}の答えはね、 {str(a + b)} だよ！」')
 
     @commands.command()
@@ -30,26 +30,27 @@ class ImoutoCog(commands.Cog):
             return
 
         pips = [random.randint(1, surfices) for _ in range(rolls)]
-        await ctx.send('(コロコロー)お兄ちゃん！サイコロいっぱい振るよ！')
-        await ctx.send(*pips, "sum =", sum(pips))
+        await ctx.send('お兄ちゃん！サイコロいっぱい振るよ！(コロコロー)')
+        m = f'{" ".join(map(str, pips))} sum = {sum(pips)}'
+        await ctx.send(m)
 
     @commands.command()
     async def choose(self, ctx, *choices: str):
         """引数からランダムで一つ選ぶ"""
-        await ctx.send(random.choise(choices))
+        await ctx.send(random.choice(choices))
 
     @commands.command()
     async def refer(self, ctx):
         """
         振り返りのために、過去に対局した対局結果をランダムに配信してくれる
-
-        Parameters
-        ----------
-        ctx : ~ext.commands.Context
-            description
         """
+
         # todo 未実装
         pass
+        # ch = ctx.get_channnel(CHANNEL_ID)
+        # messages = ch.history(200)
+        # result_messages = list(filter(lambda x: "クエスト棋譜" in x, messages))
+        # await ctx.send(random.choice(result_messages))
 
     @commands.command()
     async def ctx_methods(self, ctx):
@@ -86,16 +87,20 @@ class ImoutoCog(commands.Cog):
     @commands.command()
     async def pins(self, ctx):
         """ピン留めメッセージをすべて表示する"""
+
         await ctx.send("妹「これが今までのすべての問題だよ！」")
+
         pins = await ctx.pins()
         for pin in pins:
             message = await ctx.fetch_message(pin.id)
             await ctx.send(message.content)
 
-    @commands.command()
+    @commands.command(aliases=['p'])
     async def pins_random(self, ctx):
         """ピン留めメッセージの中からランダムで一つ表示する"""
+
         await ctx.send("妹「とっておきの問題を出してあげるね！」")
+
         pins = await ctx.pins()
         pin = random.choice(pins)
         message = await ctx.fetch_message(pin.id)

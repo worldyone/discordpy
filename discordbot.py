@@ -2,7 +2,6 @@ import discord
 from discord.ext import commands
 import os
 import traceback
-import asyncio
 from imoutocog import ImoutoCog
 from kumiromicog import KumiromiCog
 
@@ -30,30 +29,6 @@ class DiscordBot(commands.Bot):
         await ctx.send(error_msg)
 
 
-def setup(bot):
-    """
-    ボット実行前処理
-    """
-    @bot.command()
-    async def thumbup(ctx):
-        """
-        リアクションを待機するアクション
-
-        :thumbup:してあげてね！
-        """
-        await ctx.send('妹「お兄ちゃん！私に 👍 を送って欲しいな！」')
-
-        def check(reaction, user):
-            return user == ctx.message.author and str(reaction.emoji) == '👍'
-
-        try:
-            reaction, user = await bot.wait_for('reaction_add', timeout=60.0, check=check)
-        except asyncio.TimeoutError:
-            await ctx.send('👎')
-        else:
-            await ctx.send('👍')
-
-
 if __name__ == '__main__':
     # ボット作成
     bot = DiscordBot(command_prefix='e.')
@@ -63,9 +38,6 @@ if __name__ == '__main__':
 
     # クミロミボットの導入
     bot.add_cog(KumiromiCog(bot))
-
-    # ボット実行前処理
-    setup(bot)
 
     # ボット実行
     bot.run(token)
