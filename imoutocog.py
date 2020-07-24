@@ -31,7 +31,7 @@ class ImoutoCog(commands.Cog):
 
         pips = [random.randint(1, surfices) for _ in range(rolls)]
         await ctx.send('お兄ちゃん！サイコロいっぱい振るよ！(コロコロー)')
-        m = f'{" ".join(map(str, pips))} sum = {sum(pips)}'
+        m = f'{" ".join(map(str, pips))}\nsum = {sum(pips)}'
         await ctx.send(m)
 
     @commands.command()

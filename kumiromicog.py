@@ -69,6 +69,8 @@ class KumiromiCog(commands.Cog):
     async def reminder_loop(self, ctx):
         """リマインドのメインループ処理"""
 
+        await ctx.send("loop_flag", self.loop_flag)
+
         if self.loop_flag:
             now = self.round_now()
             if now in self.time_and_memos.keys():
@@ -133,7 +135,7 @@ class KumiromiCog(commands.Cog):
         if self.time_and_memos:
             await ctx.send("クミロミ「これが君たちのこれからの想いだよ…」")
             for k, v in self.time_and_memos.items():
-                str_all_time_and_memos += str(k) + ", " + str(v)
+                str_all_time_and_memos += str(k) + "    " + str(v) + "\n"
             await ctx.send(str_all_time_and_memos)
         else:
             await ctx.send("クミロミ「これから想いを綴っていこうね…？」")
@@ -206,21 +208,21 @@ class KumiromiCog(commands.Cog):
         """トーナメントの設定・表示"""
         if ctx.invoked_subcommand is None:
             await ctx.send("クミロミ「いまの設定はこんな感じ……だね…」")
-            await ctx.send("members:" + " ".join(self.members))
-            await ctx.send("playtime:" + str(self.playtime))
-            await ctx.send("breaktime:" + str(self.breaktime))
+            await ctx.send("members:\n    " + "\n    ".join(self.members))
+            await ctx.send("playtime: " + str(self.playtime))
+            await ctx.send("breaktime: " + str(self.breaktime))
 
     @tournament.command(aliases=['playtime'])
     async def tournament_playtime(self, ctx, time: int):
         """トーナメントの設定・対局時間の設定"""
         self.playtime = time
-        await ctx.send("クミロミ「遊ぶ時間を" + str(self.playtime) + "に設定したよ…？」")
+        await ctx.send("クミロミ「遊ぶ時間を  " + str(self.playtime) + "  に設定したよ…？」")
 
     @tournament.command(aliases=['breaktime'])
     async def tournament_breaktime(self, ctx, time: int):
         """トーナメントの設定・休憩時間の設定"""
         self.breaktime = time
-        await ctx.send("クミロミ「休憩時間を" + str(self.breaktime) + "に設定したよ…？」")
+        await ctx.send("クミロミ「休憩時間を  " + str(self.breaktime) + "  に設定したよ…？」")
 
     @tournament.group(aliases=['member'])
     async def tournament_member(self, ctx):
