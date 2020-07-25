@@ -171,13 +171,13 @@ class KumiromiCog(commands.Cog):
             embed.add_field(
                 name="start", value="トーナメントの開始\n e.tour start", inline=False)
             embed.add_field(
-                name="set", value="トーナメントの設定\n e.rem set", inline=False)
+                name="set", value="トーナメントの設定\n e.tour set", inline=False)
             embed.add_field(
-                name="member", value="登録したメンバの表示・設定\n e.rem member", inline=False)
+                name="member", value="登録したメンバの表示・設定\n e.tour member", inline=False)
             embed.add_field(name="playtime",
-                            value="トーナメントの対局時間の設定\n e.rem playtime 15", inline=False)
+                            value="トーナメントの対局時間の設定\n e.tour playtime 15", inline=False)
             embed.add_field(name="breaktime",
-                            value="トーナメントの休憩時間の設定\n e.rem breaktime 10", inline=False)
+                            value="トーナメントの休憩時間の設定\n e.tour breaktime 10", inline=False)
 
             await ctx.send(embed=embed)
 
