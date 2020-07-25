@@ -24,12 +24,12 @@ class ImoutoCog(commands.Cog):
     async def roll(self, ctx, dice: str):
         """ダイスロール"""
         try:
-            rolls, surfices = map(int, dice.split("d"))
+            rolls, surfaces = map(int, dice.split("d"))
         except Exception:
             await ctx.send("NdNの形式でサイコロを振ってね！お兄ちゃん！\ni.e. 1d6で六面ダイスを一回振ります。")
             return
 
-        pips = [random.randint(1, surfices) for _ in range(rolls)]
+        pips = [random.randint(1, surfaces) for _ in range(rolls)]
         await ctx.send('お兄ちゃん！サイコロいっぱい振るよ！(コロコロー)')
         m = f'{" ".join(map(str, pips))}\nsum = {sum(pips)}'
         await ctx.send(m)
