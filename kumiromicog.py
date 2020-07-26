@@ -28,7 +28,19 @@ class KumiromiCog(commands.Cog):
     events = ['囲碁', '将棋', 'オセロ']
 
     # 固定のセリフ
+    # 来週のリマインド通知用のセリフ
     REMIND_MESSAGE_1 = "そんな装備で大丈夫か？"
+
+    # トーナメント開始前のセリフ
+    MESSAGES_TOURNAMENT_START = [
+        "クミロミ「君たちの対局楽しみにしてるよ…」",
+        "クミロミ「ずっと見守ってるよ…？」",
+        "クミロミ「みんな頑張って…、みんな偉いな…」",
+        "クミロミ「前回の盛り上がった対局を思い出してきたよ…」",
+        "クミロミ「さぁ…いまから闘おう…？」",
+        "クミロミ「ふふ…、今回はどんな対局になるだろうね…」？",
+        "クミロミ「闘いの準備が整ったよ…。さぁ、君たちの力を僕に見せて……欲しいな…」",
+    ]
 
     # リマインダー用変数
     loop_flag = True
@@ -206,7 +218,7 @@ class KumiromiCog(commands.Cog):
             " " + self.REMIND_MESSAGE_1
         self.time_and_memos[targettime] = memo
 
-        await ctx.send("クミロミ「闘いの準備が整ったよ…。さぁ、君たちの力を僕に見せて……欲しいな…」")
+        await ctx.send(random.choices(self.MESSAGES_TOURNAMENT_START))
         await self.reminder_show(ctx)
 
     @tournament.command(aliases=['set', 'show', 'look', 'list'])
