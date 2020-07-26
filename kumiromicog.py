@@ -78,7 +78,7 @@ class KumiromiCog(commands.Cog):
     def cog_unload(self):
         self.reminder_loop.cancel()
 
-    @tasks.loop(minutes=1.0)
+    @tasks.loop(seconds=31)
     async def reminder_loop(self, ctx):
         """リマインドのメインループ処理"""
 
