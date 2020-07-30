@@ -106,15 +106,15 @@ class KumiromiCog(commands.Cog):
             )
 
             embed.add_field(
-                name="start", value="リマインド通知機能の開始\n e.rem start", inline=False)
+                name="start", value="リマインド通知機能の開始\n        e.rem start", inline=False)
             embed.add_field(
-                name="set", value="リマインドの登録\n e.rem set 2020-01-01 20:00 It's TRIBOARDIAN!!", inline=False)
+                name="set", value="リマインドの登録\n        e.rem set 2020-01-01 20:00 It's TRIBOARDIAN!!", inline=False)
             embed.add_field(
-                name="stop", value="リマインド通知機能の停止\n e.rem stop", inline=False)
+                name="stop", value="リマインド通知機能の停止\n        e.rem stop", inline=False)
             embed.add_field(
-                name="show", value="登録したリマインドの表示\n e.rem show", inline=False)
+                name="show", value="登録したリマインドの表示\n        e.rem show", inline=False)
             embed.add_field(
-                name="del", value="リマインドの削除\n e.rem del 2020-01-01 20:00", inline=False)
+                name="del", value="リマインドの削除\n        e.rem del 2020-01-01 20:00", inline=False)
 
             await ctx.send(embed=embed)
 
@@ -181,15 +181,15 @@ class KumiromiCog(commands.Cog):
             )
 
             embed.add_field(
-                name="start", value="トーナメントの開始\n e.tour start", inline=False)
+                name="start", value="トーナメントの開始\n        e.tour start", inline=False)
             embed.add_field(
-                name="set", value="トーナメントの設定\n e.tour set", inline=False)
+                name="set", value="トーナメントの設定\n        e.tour set", inline=False)
             embed.add_field(
-                name="member", value="登録したメンバの表示・設定\n e.tour member", inline=False)
+                name="member", value="登録したメンバの表示・設定\n        e.tour member", inline=False)
             embed.add_field(name="playtime",
-                            value="トーナメントの対局時間の設定\n e.tour playtime 15", inline=False)
+                            value="トーナメントの対局時間の設定\n        e.tour playtime 15", inline=False)
             embed.add_field(name="breaktime",
-                            value="トーナメントの休憩時間の設定\n e.tour breaktime 10", inline=False)
+                            value="トーナメントの休憩時間の設定\n        e.tour breaktime 10", inline=False)
 
             await ctx.send(embed=embed)
 
@@ -226,9 +226,19 @@ class KumiromiCog(commands.Cog):
         """トーナメントの設定・表示"""
         if ctx.invoked_subcommand is None:
             await ctx.send("クミロミ「いまの設定はこんな感じ……だね…」")
-            await ctx.send("members:\n    " + "\n    ".join(self.members))
-            await ctx.send("playtime: " + str(self.playtime))
-            await ctx.send("breaktime: " + str(self.breaktime))
+            embed = discord.Embed(
+                title="トーナメント設定",
+                description="トーナメントの設定情報です。"
+            )
+
+            embed.add_field(
+                name="メンバ", value="\n    ".join(self.members), inline=False)
+            embed.add_field(
+                name="対局時間", value=str(self.playtime), inline=False)
+            embed.add_field(
+                name="休憩時間", value=str(self.breaktime), inline=False)
+
+            await ctx.send(embed=embed)
 
     @tournament.command(aliases=['playtime'])
     async def tournament_playtime(self, ctx, time: int):
@@ -253,11 +263,11 @@ class KumiromiCog(commands.Cog):
             )
 
             embed.add_field(
-                name="add", value="メンバの追加\n e.tour member add Taro", inline=False)
+                name="add", value="メンバの追加\n        e.tour member add Taro", inline=False)
             embed.add_field(
-                name="remove", value="メンバの脱退\n e.tour member remove Taro", inline=False)
+                name="remove", value="メンバの脱退\n        e.tour member remove Taro", inline=False)
             embed.add_field(
-                name="shuffle", value="メンバの順番をシャッフル\n e.tour member shuffle", inline=False)
+                name="shuffle", value="メンバの順番をシャッフル\n        e.tour member shuffle", inline=False)
 
             await ctx.send(embed=embed)
         pass
