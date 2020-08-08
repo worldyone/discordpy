@@ -65,10 +65,16 @@ class ImoutoCog(commands.Cog):
     @commands.command()
     async def test(self, ctx):
         """test用コマンド"""
-        await ctx.send(ctx.author)
-        await ctx.send(ctx.guild.members)
-        await ctx.send(ctx.guild)
-        await ctx.send(ctx.message)
+        # await ctx.send(ctx.author)
+        # await ctx.send(ctx.guild.members)
+        # await ctx.send(ctx.guild)
+        # await ctx.send(ctx.message)
+
+        # game = discord.Game("playing Triboardian!")
+        # await ctx.change_presence(activity=game)
+        mm = ctx.message.guild.members
+        for m in mm:
+            await ctx.send(m.name)
 
     @commands.command()
     async def info(self, ctx):

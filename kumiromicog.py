@@ -218,7 +218,7 @@ class KumiromiCog(commands.Cog):
             " " + self.REMIND_MESSAGE_1
         self.time_and_memos[targettime] = memo
 
-        await ctx.send(random.choices(self.MESSAGES_TOURNAMENT_START))
+        await ctx.send(random.choice(self.MESSAGES_TOURNAMENT_START))
         await self.reminder_show(ctx)
 
     @tournament.command(aliases=['set', 'show', 'look', 'list'])
@@ -270,7 +270,6 @@ class KumiromiCog(commands.Cog):
                 name="shuffle", value="メンバの順番をシャッフル\n        e.tour member shuffle", inline=False)
 
             await ctx.send(embed=embed)
-        pass
 
     @tournament_member.command(aliases=['add'])
     async def tournament_member_add(self, ctx, name: str):
@@ -294,4 +293,11 @@ class KumiromiCog(commands.Cog):
         トーナメント開始前に実施する想定"""
         random.shuffle(self.members)
         await ctx.send("クミロミ「メンバの順番…これでバラバラだよ…」")
-        await ctx.send("members:\n  " + "\n  ".join(self.members))
+
+        embed = discord.Embed(
+            title="トーナメントのメンバ",
+            description="トーナメントの参加メンバです。"
+        )
+        embed.add_field(
+            name="メンバ", value="\n    ".join(self.members), inline=False)
+        await ctx.send(embed=embed)
