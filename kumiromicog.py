@@ -15,14 +15,15 @@ class KumiromiCog(commands.Cog):
     """
 
     # リマインドの「時間: datetime(YYYY-MM-DD HH:MM)」と「メモ: str」
-    # 同一時間に２つ以上のメモはない想定
+    # 同一時間(分までの粒度)に２つ以上のメモはない想定
+    # todo 頑張ってDBに変更する。いつか誰かが頑張る。
     time_and_memos = {}
 
     # トーナメントの設定
     members = ['tako']
-    starttime = 5  # トーナメント開始から始めの試合までの準備時間
-    playtime = 15
-    breaktime = 10
+    starttime = 5  # トーナメント開始から始めの試合までの準備時間(分)
+    playtime = 15  # 対局時間(分)
+    breaktime = 10  # 休憩時間(分)
 
     # 大会種目
     events = ['囲碁', '将棋', 'オセロ']
@@ -43,6 +44,7 @@ class KumiromiCog(commands.Cog):
     ]
 
     # リマインダー用変数
+    # todo めんどくさくて追加した変数なので、あとでちゃんと削除するように実装しなおすべき
     loop_flag = True
 
     def format_datetime(self, date: str, time: str):
@@ -211,10 +213,13 @@ class KumiromiCog(commands.Cog):
             targettime += timedelta(minutes=self.breaktime)
 
         # 大会終了後に、次回大会を実施するかどうか聞くリマインド
+        # 一週間後前日(6日後)の20時を指定
+        remind_time = datetime(
+            year=now.year, month=now.month, day=now.day + 6, hour=20)
         memo = "クミロミ「大会よく頑張ったね……。とても有意義な時間だったよ。」\n" + \
             "クミロミ「今度もまた一緒に遊んでもいい……かな……？」\n" + \
             "e.rem set " + \
-            datetime.strftime(targettime, '%Y-%m-%d %H:%M') + \
+            datetime.strftime(remind_time, '%Y-%m-%d %H:%M') + \
             " " + self.REMIND_MESSAGE_1
         self.time_and_memos[targettime] = memo
 
@@ -244,19 +249,18 @@ class KumiromiCog(commands.Cog):
     async def tournament_playtime(self, ctx, time: int):
         """トーナメントの設定・対局時間の設定"""
         self.playtime = time
-        await ctx.send("クミロミ「遊ぶ時間を  " + str(self.playtime) + "  に設定したよ…？」")
+        await ctx.send("クミロミ「遊ぶ時間を " + str(self.playtime) + "分 に設定したよ…」")
 
     @tournament.command(aliases=['breaktime'])
     async def tournament_breaktime(self, ctx, time: int):
         """トーナメントの設定・休憩時間の設定"""
         self.breaktime = time
-        await ctx.send("クミロミ「休憩時間を  " + str(self.breaktime) + "  に設定したよ…？」")
+        await ctx.send("クミロミ「休憩時間を " + str(self.breaktime) + "分 に設定したよ…」")
 
     @tournament.group(aliases=['member'])
     async def tournament_member(self, ctx):
         """トーナメントの設定・メンバ"""
         if ctx.invoked_subcommand is None:
-            await ctx.send('クミロミ「…？お願いだからサブコマンドを入力してね…？')
             embed = discord.Embed(
                 title="メンバ設定機能",
                 description="トーナメントのメンバ設定機能の使い方です。"
