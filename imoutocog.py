@@ -34,11 +34,11 @@ class ImoutoCog(commands.Cog):
         try:
             rolls, surfaces = map(int, dice.split("d"))
         except Exception:
-            await ctx.send("NdNの形式でサイコロを振ってね！お兄ちゃん！\ni.e. 1d6で六面ダイスを一回振ります。")
+            await ctx.send("妹「NdNの形式でサイコロを振ってね！お兄ちゃん！」\ni.e. 1d6で六面ダイスを一回振ります。")
             return
 
         pips = [random.randint(1, surfaces) for _ in range(rolls)]
-        await ctx.send(f'お兄ちゃん！サイコロ{"いっぱい"*(rolls>1)}振るよ！(コロコロー)')
+        await ctx.send(f'妹「お兄ちゃん！サイコロ{"いっぱい"*(rolls>1)}振るよ！(コロコロー)」')
         m = f'{" ".join(map(str, pips))}\nsum = {sum(pips)}'
         await ctx.send(m)
 
@@ -183,7 +183,7 @@ class ImoutoCog(commands.Cog):
 
         return s
 
-    @quiz_wikipedia.command(aliases=['one'])
+    @quiz_wikipedia.command(aliases=['one', 'o'])
     async def print_one_summary(self, ctx):
         """一行表示"""
         one_line = self.wikipedia_page.summary  # まずサマリーを取得する
@@ -194,14 +194,14 @@ class ImoutoCog(commands.Cog):
 
         await ctx.send(question_sentence)
 
-    @quiz_wikipedia.command(aliases=['summary'])
+    @quiz_wikipedia.command(aliases=['summary', 's'])
     async def print_summary(self, ctx):
         """サマリー表示"""
         summary = self.wikipedia_page.summary
         question_sentence = self.do_hide_words(summary)
         await ctx.send(question_sentence)
 
-    @quiz_wikipedia.command(aliases=['answer', 'title'])
+    @quiz_wikipedia.command(aliases=['answer', 'title', 'a'])
     async def print_answer(self, ctx):
         """答え表示"""
         await ctx.send(self.wikipedia_page.title)
@@ -222,8 +222,9 @@ class ImoutoCog(commands.Cog):
 
     @quiz_wikipedia.command(aliases=['hint'])
     async def print_hint(self, ctx, key: str):
-        if key == "wo1":
-            await ctx.send("妹「一文字目は「" + self.wikipedia_page.title[0] + "」だよ！」")
+        if key.startswith("wo"):
+            word_position = int(key[2:]) - 1
+            await ctx.send(f'妹「{word_position + 1}文字目は「{self.wikipedia_page.title[word_position]}」だよ！」')
         if key == "se2":
             se2 = self.wikipedia_page.summary
             s1 = se2.find("\n")
@@ -266,7 +267,7 @@ class ImoutoCog(commands.Cog):
 
         return words
 
-    @quiz_wikipedia.command(aliases=['gil', 'get in list'])
+    @quiz_wikipedia.command(aliases=['gil', 'get_in_list'])
     async def get_wikipedia_page_for_wordlist(self, ctx):
         """作成した単語帳からランダムで単語を選び、その単語でwikipediaのページを取得する"""
 
