@@ -20,10 +20,10 @@ class KumiromiCog(commands.Cog):
     time_and_memos = {}
 
     # トーナメントの設定
-    members = ['tako']
+    members = ['tako2', 'gushun20', 'murata2415']
     starttime = 5  # トーナメント開始から始めの試合までの準備時間(分)
     playtime = 15  # 対局時間(分)
-    breaktime = 10  # 休憩時間(分)
+    breaktime = 5  # 休憩時間(分)
 
     # 大会種目
     events = ['囲碁', '将棋', 'オセロ']
