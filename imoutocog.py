@@ -122,16 +122,7 @@ class ImoutoCog(commands.Cog):
 
     @commands.group(aliases=['q'])
     async def quiz_wikipedia(self, ctx):
-        """wikipedia問題
-
-        サブコマンド
-        get 新しい単語をランダムで決定して、wikipediaページを取得する
-        one 取得中のwikipediaページの一行目を表示する
-        summary 取得中のwikipediaページのサマリーを表示する
-        answer 取得中のwikipediaページのタイトルを表示する
-        url 取得中のwikipediaページのurlを表示する
-        find 指定した単語のwikipediaのページを取得する
-        """
+        """wikipedia問題"""
         if ctx.invoked_subcommand is None:
             embed = discord.Embed(
                 title="wikipediaクイズ機能",
@@ -139,7 +130,21 @@ class ImoutoCog(commands.Cog):
             )
 
             embed.add_field(
-                name="start", value="リマインド通知機能の開始\n        e.rem start", inline=False)
+                name="get", value="新しい単語をランダムで決定して、wikipediaページを取得する\n        e.q get", inline=False)
+            embed.add_field(
+                name="one", value="取得中のwikipediaページの一行目を表示する\n        e.q one", inline=False)
+            embed.add_field(
+                name="summary", value="取得中のwikipediaページのサマリーを表示する\n        e.q summary", inline=False)
+            embed.add_field(
+                name="answer", value="取得中のwikipediaページのタイトルを表示する\n        e.q answer", inline=False)
+            embed.add_field(
+                name="url", value="取得中のwikipediaページのurlを表示する\n        e.q url", inline=False)
+            embed.add_field(
+                name="find", value="指定した単語のwikipediaのページを取得する\n        e.q find", inline=False)
+            embed.add_field(
+                name="create_list", value="単語帳を作成する\n        e.q cl (history|science)", inline=False)
+            embed.add_field(
+                name="get_in_list", value="単語帳からランダムな単語のwikipediaページを取得する\n        e.q gil", inline=False)
 
             await ctx.send(embed=embed)
 
@@ -202,9 +207,9 @@ class ImoutoCog(commands.Cog):
         await ctx.send(question_sentence)
 
     @quiz_wikipedia.command(aliases=['answer', 'title', 'a'])
-    async def print_answer(self, ctx):
+    async def print_answer(self, ctx, spoiler=False):
         """答え表示"""
-        await ctx.send(self.wikipedia_page.title)
+        await ctx.send(f'{"||"*spoiler}{self.wikipedia_page.title}{"||"*spoiler}')
 
     @quiz_wikipedia.command(aliases=['url'])
     async def print_url(self, ctx):
@@ -216,15 +221,11 @@ class ImoutoCog(commands.Cog):
         """指定した単語のwikipediaページを取得する"""
         self.wikipedia_page = wikipedia.page(target_word)
 
-    @quiz_wikipedia.command(aliases=['content'])
-    async def get_content(self, ctx):
-        await ctx.send(self.wikipedia_page.content)
-
     @quiz_wikipedia.command(aliases=['hint'])
     async def print_hint(self, ctx, key: str):
         if key.startswith("wo"):
-            word_position = int(key[2:]) - 1
-            await ctx.send(f'妹「{word_position + 1}文字目は「{self.wikipedia_page.title[word_position]}」だよ！」')
+            word_position = int(key[2:])
+            await ctx.send(f'妹「{word_position}文字目は「{self.wikipedia_page.title[word_position - 1]}」だよ！」')
         if key == "se2":
             se2 = self.wikipedia_page.summary
             s1 = se2.find("\n")
