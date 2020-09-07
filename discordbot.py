@@ -4,6 +4,7 @@ import os
 import traceback
 from imoutocog import ImoutoCog
 from kumiromicog import KumiromiCog
+from quizcog import QuizCog
 
 
 token = os.environ['DISCORD_BOT_TOKEN']
@@ -38,6 +39,9 @@ if __name__ == '__main__':
 
     # クミロミボットの導入
     bot.add_cog(KumiromiCog(bot))
+
+    # クイズボットの導入
+    bot.add_cog(QuizCog(bot))
 
     # ボット実行
     bot.run(token)
