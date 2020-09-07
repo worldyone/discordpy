@@ -1,6 +1,5 @@
 import discord
 from discord.ext import commands
-import inspect
 import random
 import wikipedia
 import requests
@@ -48,43 +47,6 @@ class ImoutoCog(commands.Cog):
         await ctx.send(random.choice(choices))
 
     @commands.command()
-    async def refer(self, ctx):
-        """
-        振り返りのために、過去に対局した対局結果をランダムに配信してくれる
-        """
-
-        # todo 未実装
-        pass
-        # ch = ctx.get_channnel(CHANNEL_ID)
-        # messages = ch.history(200)
-        # result_messages = list(filter(lambda x: "クエスト棋譜" in x, messages))
-        # await ctx.send(random.choice(result_messages))
-
-    @commands.command()
-    async def ctx_methods(self, ctx):
-        """ctxの持つメソッド確認"""
-        ctx.send(type(ctx))
-        for x in inspect.getmembers(ctx, inspect.ismethod):
-            await ctx.send(x[0])
-            print(x[0])
-
-        await ctx.send(ctx.__class__.__name__)
-
-    @commands.command()
-    async def test(self, ctx):
-        """test用コマンド"""
-        # await ctx.send(ctx.author)
-        # await ctx.send(ctx.guild.members)
-        # await ctx.send(ctx.guild)
-        # await ctx.send(ctx.message)
-
-        # game = discord.Game("playing Triboardian!")
-        # await ctx.change_presence(activity=game)
-        mm = ctx.message.guild.members
-        for m in mm:
-            await ctx.send(m.name)
-
-    @commands.command()
     async def info(self, ctx):
         """ボット紹介・解説"""
         embed = discord.Embed(
@@ -97,17 +59,6 @@ class ImoutoCog(commands.Cog):
         embed.add_field(name="Author", value="kanikun")
 
         await ctx.send(embed=embed)
-
-    @commands.command()
-    async def pins(self, ctx):
-        """ピン留めメッセージをすべて表示する"""
-
-        await ctx.send("妹「これが今までのすべての問題だよ！」")
-
-        pins = await ctx.pins()
-        for pin in pins:
-            message = await ctx.fetch_message(pin.id)
-            await ctx.send(message.content)
 
     @commands.command(aliases=['p'])
     async def pins_random(self, ctx):
@@ -136,13 +87,14 @@ class ImoutoCog(commands.Cog):
             embed.add_field(
                 name="summary", value="取得中のwikipediaページのサマリーを表示する\n        e.q summary", inline=False)
             embed.add_field(
-                name="answer", value="取得中のwikipediaページのタイトルを表示する\n        e.q answer", inline=False)
+                name="answer [, True]",
+                value="取得中のwikipediaページのタイトルを表示する\nTrueをつけると隠し文字で表示する\n        e.q answer", inline=False)
             embed.add_field(
                 name="url", value="取得中のwikipediaページのurlを表示する\n        e.q url", inline=False)
             embed.add_field(
                 name="find", value="指定した単語のwikipediaのページを取得する\n        e.q find", inline=False)
             embed.add_field(
-                name="create_list", value="単語帳を作成する\n        e.q cl (history|science)", inline=False)
+                name="create_list", value="単語帳を作成する\n        e.q cl (history|science|etc...)", inline=False)
             embed.add_field(
                 name="get_in_list", value="単語帳からランダムな単語のwikipediaページを取得する\n        e.q gil", inline=False)
 
@@ -279,5 +231,7 @@ class ImoutoCog(commands.Cog):
 
     @quiz_wikipedia.command(aliases=['d_show_wordlist'])
     async def show_wordlist(self, ctx):
-        """デバッグ用。wordlistを見る"""
-        print(", ".join(self.wordlist))
+        """デバッグ用。wordlistを見る
+
+        Discordの出力文字数限界が2000なので、2000未満の表示とする"""
+        print(", ".join(self.wordlist)[:1000] + "...")
