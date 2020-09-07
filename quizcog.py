@@ -26,7 +26,7 @@ class QuizCog(commands.Cog):
             )
 
             embed.add_field(
-                name="get", value="新しい単語をランダムで決定して、wikipediaページを取得する\n        e.q get", inline=False)
+                name="get", value="wikipediaからランダムなページを取得する\n        e.q get", inline=False)
             embed.add_field(
                 name="one", value="取得中のwikipediaページの一行目を表示する\n        e.q one", inline=False)
             embed.add_field(
@@ -37,9 +37,9 @@ class QuizCog(commands.Cog):
             embed.add_field(
                 name="url", value="取得中のwikipediaページのurlを表示する\n        e.q url", inline=False)
             embed.add_field(
-                name="find", value="指定した単語のwikipediaのページを取得する\n        e.q find", inline=False)
+                name="find", value="指定した単語のwikipediaのページを取得する\n        e.q find 'target-word'", inline=False)
             embed.add_field(
-                name="create_list", value="単語帳を作成する\n        e.q cl (history|science|etc...)", inline=False)
+                name="create_list (history|science|etc...)", value="単語帳を作成する\n        e.q cl history", inline=False)
             embed.add_field(
                 name="get_in_list", value="単語帳からランダムな単語のwikipediaページを取得する\n        e.q gil", inline=False)
 
@@ -106,7 +106,7 @@ class QuizCog(commands.Cog):
     @quiz_wikipedia.command(aliases=['answer', 'title', 'a'])
     async def print_answer(self, ctx, spoiler=False):
         """答え表示"""
-        await ctx.send(f'{"||"*spoiler}{self.wikipedia_page.title}{"||"*spoiler}')
+        await ctx.send(f'妹「答えは「**{"||"*spoiler}{self.wikipedia_page.title}{"||"*spoiler}**」だよ！」')
 
     @quiz_wikipedia.command(aliases=['url'])
     async def print_url(self, ctx):
@@ -117,6 +117,7 @@ class QuizCog(commands.Cog):
     async def get_wikipedia_page(self, ctx, target_word: str):
         """指定した単語のwikipediaページを取得する"""
         self.wikipedia_page = wikipedia.page(target_word)
+        await ctx.send("妹「調べてきたよ！お兄ちゃん！」")
 
     @quiz_wikipedia.command(aliases=['hint'])
     async def print_hint(self, ctx, key: str):
