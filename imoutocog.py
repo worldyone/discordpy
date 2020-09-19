@@ -18,7 +18,6 @@ class ImoutoCog(commands.Cog):
     async def add(self, ctx, a: int, b: int):
         """引数確認用コマンド 足し算 i.e. e.add 1 2"""
         await ctx.send(f'妹「{a}＋{b}の答えはね、 {str(a + b)} だよ！」')
-        aaaaaa
 
     @commands.command()
     async def roll(self, ctx, dice: str):
