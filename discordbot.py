@@ -7,7 +7,7 @@ from kumiromicog import KumiromiCog
 from quizcog import QuizCog
 
 
-token = os.environ['DISCORD_BOT_TOKEN']
+"""token = os.environ['DISCORD_BOT_TOKEN']"""
 
 
 class DiscordBot(commands.Bot):
@@ -44,4 +44,4 @@ if __name__ == '__main__':
     bot.add_cog(QuizCog(bot))
 
     # ボット実行
-    bot.run(token)
+    bot.run("NzM2Njc5MzUzNDU4NDkxNDc2.XxyUHA.biBoyyta7Ay5vXixjN0QH1H8SDM")
