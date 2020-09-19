@@ -15,6 +15,11 @@ class ImoutoCog(commands.Cog):
         await ctx.send('妹「お兄ちゃん！お兄ちゃん！お兄ちゃん！」')
 
     @commands.command()
+    async def sigsig(self, ctx):
+        """シグシグ"""
+        await ctx.send('ムシは　たべるものじゃない　ムシは　あいするものだ')
+
+    @commands.command()
     async def add(self, ctx, a: int, b: int):
         """引数確認用コマンド 足し算 i.e. e.add 1 2"""
         await ctx.send(f'妹「{a}＋{b}の答えはね、 {str(a + b)} だよ！」')
