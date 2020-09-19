@@ -44,4 +44,5 @@ if __name__ == '__main__':
     bot.add_cog(QuizCog(bot))
 
     # ボット実行
-    bot.run("NzM2Njc5MzUzNDU4NDkxNDc2.XxyUHA.biBoyyta7Ay5vXixjN0QH1H8SDM")
+    token = "NzM2Njc5MzUzNDU4NDkxNDc2.XxyUHA.biBoyyta7Ay5vXixjN0QH1H8SDM"
+    bot.run(token)
