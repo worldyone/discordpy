@@ -6,7 +6,7 @@ from imoutocog import ImoutoCog
 from kumiromicog import KumiromiCog
 from quizcog import QuizCog
 
-
+#pushした後はトークンIDが使えなくなるので新しくIDを更新してあげましょう
 token = "NzM2Njc5MzUzNDU4NDkxNDc2.XxyUHA.4tnGIRyhPP7vQFOz6nAYHvbTPNI"
 
 class DiscordBot(commands.Bot):
