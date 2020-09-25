@@ -5,6 +5,7 @@ from datetime import timedelta
 from datetime import timezone
 import random
 import itertools
+from collections import OrderedDict
 
 
 class KumiromiCog(commands.Cog):
@@ -17,7 +18,7 @@ class KumiromiCog(commands.Cog):
     # リマインドの「時間: datetime(YYYY-MM-DD HH:MM)」と「メモ: str」
     # 同一時間(分までの粒度)に２つ以上のメモはない想定
     # todo 頑張ってDBに変更する。いつか誰かが頑張る。
-    time_and_memos = {}
+    time_and_memos = OrderedDict()
 
     # トーナメントの設定
     members = ['tako2', 'gushun20', 'murata2415']
@@ -154,16 +155,28 @@ class KumiromiCog(commands.Cog):
             await ctx.send("クミロミ「これから想いを綴っていこうね…？」")
 
     @reminder.command(aliases=['del', 'delete', 'remove'])
-    async def reminder_delete(self, ctx, date: str, time: str):
-        """リマインドを削除する
-
-        todo: 番号で削除できるようにする
-        """
-        set_datetime = self.format_datetime(date, time)
-
-        if set_datetime in self.time_and_memos.keys():
-            self.time_and_memos.remove(set_datetime)
-            await ctx.send("クミロミ「消した…消しちゃったね…、悲しいね…」")
+    async def reminder_delete(self, ctx, index: int = 0):
+        """リマインドを削除する"""
+        # 引数が指定されなければ、リストを提示する
+        if index == 0:
+            message = "クミロミ「消したい番号を選択してね…」\n  i.e. e.rem del 3\n"
+            i = 1
+            for time, memo in self.time_and_memos.items():
+                message += f'[{i}]: {time} , {memo}\n'
+                i += 1
+            await ctx.send(message)
+        else:
+            i = 0
+            for time, memo in self.time_and_memos.items():
+                i += 1
+                if i == index:
+                    key_time = time
+            del self.time_and_memos[key_time]
+            i = 1
+            message = ""
+            for time, memo in self.time_and_memos.items():
+                message += f'[{i}]: {time} , {memo}\n'
+            await ctx.send(message)
 
     @reminder.command(aliases=['all delete'])
     async def reminder_all_delete(self, ctx):
