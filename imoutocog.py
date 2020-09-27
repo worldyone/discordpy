@@ -20,7 +20,7 @@ class ImoutoCog(commands.Cog):
         await ctx.send(f'妹「{a}＋{b}の答えはね、 {str(a + b)} だよ！」')
 
     @commands.command()
-    async def roll(self, ctx, dice: str):
+    async def roll(self, ctx, dice: str = "1d6"):
         """ダイスロール"""
         try:
             rolls, surfaces = map(int, dice.split("d"))
