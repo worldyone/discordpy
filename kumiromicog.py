@@ -23,8 +23,8 @@ class KumiromiCog(commands.Cog):
     # トーナメントの設定
     members = ['tako2', 'gushun20', 'murata2415']
     starttime = 5  # トーナメント開始から始めの試合までの準備時間(分)
-    playtime = 15  # 対局時間(分)
-    breaktime = 5  # 休憩時間(分)
+    playtime = 25  # 対局時間(分)
+    breaktime = 15  # 休憩時間(分)
 
     # 大会種目
     events = ['囲碁', '将棋', 'オセロ']
@@ -166,16 +166,18 @@ class KumiromiCog(commands.Cog):
                 i += 1
             await ctx.send(message)
         else:
-            i = 0
+            # 選択された番号のリマインドを削除して、削除終えたリマインドリストを提示する
+            message = ""
+            i = print_i = 0
             for time, memo in self.time_and_memos.items():
                 i += 1
                 if i == index:
-                    key_time = time
-            del self.time_and_memos[key_time]
-            i = 1
-            message = ""
-            for time, memo in self.time_and_memos.items():
-                message += f'[{i}]: {time} , {memo}\n'
+                    remove_time = time
+                    continue
+                print_i += 1
+                message += f'[{print_i}]: {time} , {memo}\n'
+            del self.time_and_memos[remove_time]
+
             await ctx.send(message)
 
     @reminder.command(aliases=['all delete'])
