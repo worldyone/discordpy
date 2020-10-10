@@ -44,10 +44,6 @@ class KumiromiCog(commands.Cog):
         "クミロミ「闘いの準備が整ったよ…。さぁ、君たちの力を僕に見せて……欲しいな…」",
     ]
 
-    # リマインダー用変数
-    # todo めんどくさくて追加した変数なので、あとでちゃんと削除するように実装しなおすべき
-    loop_flag = True
-
     def format_datetime(self, date: str, time: str):
         """日付と時刻からdatetime型を返す
 
@@ -85,10 +81,9 @@ class KumiromiCog(commands.Cog):
     async def reminder_loop(self, ctx):
         """リマインドのメインループ処理"""
 
-        if self.loop_flag:
-            now = self.round_now()
-            if now in self.time_and_memos.keys():
-                await ctx.send(self.time_and_memos.pop(now))
+        now = self.round_now()
+        if now in self.time_and_memos.keys():
+            await ctx.send(self.time_and_memos.pop(now))
 
     @commands.group(aliases=['rem'])
     async def reminder(self, ctx):
@@ -125,14 +120,13 @@ class KumiromiCog(commands.Cog):
     async def reminder_start(self, ctx):
         """リマインド機能を開始する"""
         self.reminder_loop.start(ctx)
-        self.loop_flag = True
         await ctx.send("クミロミ「分かった…君に想いを告げるよ…」")
 
     @reminder.command(aliases=['stop'])
     async def reminder_stop(self, ctx):
         """リマインド機能を停止する"""
-        self.loop_flag = False
-        await ctx.send("クミロミ「うん…一旦休憩するね…？」")
+        self.reminder_loop.cancel()
+        await ctx.send("クミロミ「うん…一旦休憩するね…」")
 
     @reminder.command(aliases=['set', 'add'])
     async def reminder_set(self, ctx, date: str, time: str, *memo: str):
