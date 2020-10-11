@@ -7,7 +7,7 @@ from selenium.webdriver import Chrome, ChromeOptions
 class PlayokCog(commands.Cog):
 
     USER_ID = "tako2"
-    PASSWORD = "xxxxxx"
+    PASSWORD = "xxxxxxxx"
 
     @commands.group(aliases=['playok', 'po', 'ok'])
     async def playOK(self, ctx):
