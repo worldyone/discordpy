@@ -5,6 +5,7 @@ import traceback
 from imoutocog import ImoutoCog
 from kumiromicog import KumiromiCog
 from quizcog import QuizCog
+from playokcog import PlayokCog
 
 
 token = os.environ['DISCORD_BOT_TOKEN']
@@ -42,6 +43,9 @@ if __name__ == '__main__':
 
     # クイズボットの導入
     bot.add_cog(QuizCog(bot))
+
+    # playOKボットの導入
+    bot.add_cog(PlayokCog(bot))
 
     # ボット実行
     bot.run(token)

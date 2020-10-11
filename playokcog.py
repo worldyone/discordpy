@@ -2,12 +2,16 @@ import discord
 from discord.ext import commands
 import time
 from selenium.webdriver import Chrome, ChromeOptions
+import requests
+from bs4 import BeautifulSoup as bs4
 
 
 class PlayokCog(commands.Cog):
 
     USER_ID = "tako2"
     PASSWORD = "xxxxxxxx"
+
+    GROUP_MEMBER = ["tako2", "mto2415", "snpc94"]
 
     @commands.group(aliases=['playok', 'po', 'ok'])
     async def playOK(self, ctx):
@@ -81,3 +85,71 @@ class PlayokCog(commands.Cog):
 
         # 作成した部屋のURLを返す
         await ctx.send(driver.current_url)
+
+    @playOK.command(aliases=["gr"])
+    async def get_results(self, ctx, player_name: str = ""):
+        if player_name == "":
+            player_name = self.USER_ID
+        go_results = self.get_format_url_by_event("go", player_name, 2)
+        sg_results = self.get_format_url_by_event("sg", player_name, 2)
+        rv_results = self.get_format_url_by_event("rv", player_name, 2)
+
+        message_results = ""
+        for info, url in go_results:
+            message_results += "囲碁  " + info + "\n" + url + "\n\n"
+        for info, url in sg_results:
+            message_results += "将棋  " + info + "\n" + url + "\n\n"
+        for info, url in rv_results:
+            message_results += "オセロ  " + info + "\n" + url + "\n\n"
+        await ctx.send(message_results)
+
+    @playOK.command(aliases=["results"])
+    async def get_group_results(self, ctx):
+        go_results = self.get_format_url_by_event(
+            "go", self.GROUP_MEMBER[0], 2)
+        go_results += self.get_format_url_by_event(
+            "go", self.GROUP_MEMBER[1], 2)
+        sg_results = self.get_format_url_by_event(
+            "sg", self.GROUP_MEMBER[0], 2)
+        sg_results += self.get_format_url_by_event(
+            "sg", self.GROUP_MEMBER[1], 2)
+        rv_results = self.get_format_url_by_event(
+            "rv", self.GROUP_MEMBER[0], 2)
+        rv_results += self.get_format_url_by_event(
+            "rv", self.GROUP_MEMBER[1], 2)
+
+        message_results = ""
+        for info, url in go_results:
+            if url not in message_results:
+                message_results += "囲碁  " + info + "\n" + url + "\n\n"
+        for info, url in sg_results:
+            if url not in message_results:
+                message_results += "将棋  " + info + "\n" + url + "\n\n"
+        for info, url in rv_results:
+            if url not in message_results:
+                message_results += "オセロ  " + info + "\n" + url + "\n\n"
+
+        await ctx.send(message_results)
+
+    def get_format_url_by_event(self, event, player_name, n):
+        """
+        通算成績ページを開いて、対局結果のURLを取得する
+
+        event: 競技名の略称
+        player_name: 対局者の名前
+        n: 取得する対局試合数（直近から数える）
+        """
+        url = f'https://www.playok.com/ja/stat.phtml?u={player_name}&g={event}&sk=2'
+        page = requests.get(url)
+        soup = bs4(page.content, 'lxml')
+        a_tags = soup.find_all('a')
+        results = []
+        sp = 5 + (event == "rv")  # リンクを取得するにあたり、取得位置の補正
+        for m in range(n):  # 直近2試合分
+            players = a_tags[sp + m * 4].text + \
+                " v.s. " + a_tags[sp + 1 + m * 4].text
+            result_url = "https://www.playok.com" + \
+                a_tags[sp + 2 + m * 4].get("href")
+            results.append([players, result_url])
+
+        return results
