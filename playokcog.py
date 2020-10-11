@@ -23,6 +23,10 @@ class PlayokCog(commands.Cog):
 
             embed.add_field(
                 name="create_room", value="部屋の作成\n        e.ok cr 将棋", inline=False)
+            embed.add_field(
+                name="get_result", value="個人の対局結果の取得\n        e.ok gr {name}", inline=False)
+            embed.add_field(
+                name="results", value="グループメンバの対局結果の取得\n        e.ok results", inline=False)
 
             await ctx.send(embed=embed)
 
@@ -88,6 +92,8 @@ class PlayokCog(commands.Cog):
 
     @playOK.command(aliases=["gr"])
     async def get_results(self, ctx, player_name: str = ""):
+        """個人の対局結果を取得する"""
+
         if player_name == "":
             player_name = self.USER_ID
         go_results = self.get_format_url_by_event("go", player_name, 2)
@@ -105,6 +111,8 @@ class PlayokCog(commands.Cog):
 
     @playOK.command(aliases=["results"])
     async def get_group_results(self, ctx):
+        """グループメンバの対局結果を取得する"""
+
         go_results = self.get_format_url_by_event(
             "go", self.GROUP_MEMBER[0], 2)
         go_results += self.get_format_url_by_event(
