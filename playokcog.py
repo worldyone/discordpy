@@ -33,13 +33,14 @@ class PlayokCog(commands.Cog):
     @playOK.command(aliases=['create_room', 'cr'])
     async def create_playing_room(self, ctx, event: str):
         """
+        todo: 未完成というか止めた方が良い気がしてきてる。
         PlayOKに自動ログインして、テーブル作成を実施して、部屋のURLを返す機能
 
         ログインID, ログインパスワードは、作成者:worldyのものを使用する。
         """
 
         options = ChromeOptions()
-        # ヘッドレスモードを有効にする（次の行をコメントアウトすると画面が表示される）。
+        # ヘッドレスモードを有効にする
         options.add_argument('--headless')
         # ChromeのWebDriverオブジェクトを作成する。
         driver = Chrome(options=options)
@@ -153,7 +154,7 @@ class PlayokCog(commands.Cog):
         a_tags = soup.find_all('a')
         results = []
         sp = 5 + (event == "rv")  # リンクを取得するにあたり、取得位置の補正
-        for m in range(n):  # 直近2試合分
+        for m in range(n):  # 直近n試合分
             players = a_tags[sp + m * 4].text + \
                 " v.s. " + a_tags[sp + 1 + m * 4].text
             result_url = "https://www.playok.com" + \
@@ -161,3 +162,25 @@ class PlayokCog(commands.Cog):
             results.append([players, result_url])
 
         return results
+
+    @playOK.command(aliases=['shogi_kento', 'sk'])
+    async def playOK_kento(self, ctx, url):
+        """
+        将棋の検討
+        """
+
+        # 指定されたplayOKの対局結果URLから棋譜を取得して、ki2の棋譜に変換する
+        playok2ki2_url = 'https://shogi.zukeran.org/cgi-bin/playok2ki2.cgi'
+        playok2ki2_kifu_url = playok2ki2_url + '?url=' + url
+        page = requests.get(playok2ki2_kifu_url)
+        soup = bs4(page.content, 'lxml')
+        ki2_kifu = soup.text
+
+        # 検討サイトを開く
+        driver = Chrome()
+        driver.get('https://www.shogi-extend.com/adapter')
+
+        # 棋譜入力エリアに棋譜を入力する
+        kifu_area = driver.find_element_by_xpath(
+            '//*[@id="__layout"]/div/div/div/div/div/div[1]/div/textarea')
+        kifu_area.send_keys(ki2_kifu)
