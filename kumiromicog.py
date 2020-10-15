@@ -40,7 +40,7 @@ class KumiromiCog(commands.Cog):
         "クミロミ「みんな頑張って…、みんな偉いな…」",
         "クミロミ「前回の盛り上がった対局を思い出してきたよ…」",
         "クミロミ「さぁ…いまから闘おう…？」",
-        "クミロミ「ふふ…、今回はどんな対局になるだろうね…」？",
+        "クミロミ「ふふ…、今回はどんな対局になるだろうね…？」",
         "クミロミ「闘いの準備が整ったよ…。さぁ、君たちの力を僕に見せて……欲しいな…」",
     ]
 
@@ -113,6 +113,8 @@ class KumiromiCog(commands.Cog):
                 name="show", value="登録したリマインドの表示\n        e.rem show", inline=False)
             embed.add_field(
                 name="del", value="リマインドの削除\n        e.rem del 2020-01-01 20:00", inline=False)
+            embed.add_field(
+                name="all_delete", value="リマインドの全削除\n        e.rem all_delete", inline=False)
 
             await ctx.send(embed=embed)
 
@@ -174,7 +176,7 @@ class KumiromiCog(commands.Cog):
 
             await ctx.send(message)
 
-    @reminder.command(aliases=['all delete'])
+    @reminder.command(aliases=['all_delete'])
     async def reminder_all_delete(self, ctx):
         """リマインドをすべて削除する"""
         self.time_and_memos.clear()
@@ -183,7 +185,7 @@ class KumiromiCog(commands.Cog):
     async def tournament(self, ctx):
         """トーナメント機能
 
-        メンバと時間の設定をすることで、大会用のリマインドを発行する
+        大会用のリマインドを発行して、タイムキーパーの役割を担う
         """
         if ctx.invoked_subcommand is None:
             embed = discord.Embed(
@@ -206,11 +208,17 @@ class KumiromiCog(commands.Cog):
 
     @tournament.command(aliases=['start'])
     async def tournament_start(self, ctx):
+        """
+        トーナメント機能のメイン処理
+        設定されたメンバ・時間でトーナメントを開催する
+        """
+
         player_comb = list(itertools.combinations(self.members, 2))  # 対局総組み合わせ
 
         now = self.round_now()
         targettime = now + timedelta(minutes=self.starttime)  # 開始時間のセット
 
+        # 全対局のリマインドを設定する
         for pl1, pl2 in player_comb:  # 対局者2人ずつ
             for event in self.events:  # 全種目
                 memo = str(pl1) + " と " + str(pl2) + \
@@ -223,9 +231,10 @@ class KumiromiCog(commands.Cog):
 
         # 大会終了後に、次回大会を実施するかどうか聞くリマインド
         # 一週間後前日(6日後)の20時を指定
+        # todo: 月跨ぎとか全く考えてない
         remind_time = datetime(
             year=now.year, month=now.month, day=now.day + 6, hour=20)
-        memo = "クミロミ「大会よく頑張ったね……。とても有意義な時間だったよ。」\n" + \
+        memo = "クミロミ「大会よく頑張ったね……。とても有意義な時間だったよ…」\n" + \
             "クミロミ「今度もまた一緒に遊んでもいい……かな……？」\n" + \
             "e.rem set " + \
             datetime.strftime(remind_time, '%Y-%m-%d %H:%M') + \
