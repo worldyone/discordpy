@@ -24,7 +24,7 @@ class KumiromiCog(commands.Cog):
     members = ['tako2', 'gushun20', 'murata2415']
     starttime = 5  # トーナメント開始から始めの試合までの準備時間(分)
     playtime = 25  # 対局時間(分)
-    breaktime = 15  # 休憩時間(分)
+    breaktime = 10  # 休憩時間(分)
 
     # 大会種目
     events = ['囲碁', '将棋', 'オセロ']
@@ -231,9 +231,8 @@ class KumiromiCog(commands.Cog):
 
         # 大会終了後に、次回大会を実施するかどうか聞くリマインド
         # 一週間後前日(6日後)の20時を指定
-        # todo: 月跨ぎとか全く考えてない
         remind_time = datetime(
-            year=now.year, month=now.month, day=now.day + 6, hour=20)
+            year=now.year, month=now.month, day=now.day, hour=20) + timedelta(days=6)
         memo = "クミロミ「大会よく頑張ったね……。とても有意義な時間だったよ…」\n" + \
             "クミロミ「今度もまた一緒に遊んでもいい……かな……？」\n" + \
             "e.rem set " + \
