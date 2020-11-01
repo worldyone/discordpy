@@ -41,7 +41,7 @@ class PlayokCog(commands.Cog):
 
         options = ChromeOptions()
         # ヘッドレスモードを有効にする
-        options.add_argument('--headless')
+        # options.add_argument('--headless')
         # ChromeのWebDriverオブジェクトを作成する。
         driver = Chrome(options=options)
 
@@ -130,13 +130,13 @@ class PlayokCog(commands.Cog):
         message_results = ""
         for info, url in go_results:
             if url not in message_results:
-                message_results += "囲碁  " + info + "\n" + url + "\n\n"
+                message_results += "囲碁  " + info + " " + url + "\n"
         for info, url in sg_results:
             if url not in message_results:
-                message_results += "将棋  " + info + "\n" + url + "\n\n"
+                message_results += "将棋  " + info + " " + url + "\n"
         for info, url in rv_results:
             if url not in message_results:
-                message_results += "オセロ  " + info + "\n" + url + "\n\n"
+                message_results += "オセロ  " + info + " " + url + "\n"
 
         await ctx.send(message_results)
 
