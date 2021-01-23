@@ -221,8 +221,14 @@ class KumiromiCog(commands.Cog):
         # 全対局のリマインドを設定する
         for pl1, pl2 in player_comb:  # 対局者2人ずつ
             for event in self.events:  # 全種目
+
+                #先手後手の手番決定（中山実装部分）
+                turn_pattern = [[pl1,pl2],[pl2,pl1]]
+                decide_turn = random.choice(turn_pattern)
+            
                 memo = str(pl1) + " と " + str(pl2) + \
-                    " の " + event + " の対局開始時間です。"
+                    " の " + event + " の対局開始時間です。" + "\n" + \
+                    "**先手**：" + str(decide_turn[0]) + "　**後手**：" + str(decide_turn[1]) + " になりました。"
                 self.time_and_memos[targettime] = memo
                 targettime += timedelta(minutes=self.playtime)
 
