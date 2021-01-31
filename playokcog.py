@@ -33,7 +33,7 @@ class PlayokCog(commands.Cog):
     @playOK.command(aliases=['create_room', 'cr'])
     async def create_playing_room(self, ctx, event: str):
         """
-        todo: 未完成というか止めた方が良い気がしてきてる。
+        # todo 未完成というか止めた方が良い気がしてきてる。そもそも相手側のログインが難しい。
         PlayOKに自動ログインして、テーブル作成を実施して、部屋のURLを返す機能
 
         ログインID, ログインパスワードは、作成者:worldyのものを使用する。
