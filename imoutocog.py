@@ -55,6 +55,7 @@ class ImoutoCog(commands.Cog):
     @commands.command(aliases=['p'])
     async def pins_random(self, ctx):
         """ピン留めメッセージの中からランダムで一つ表示する"""
+        # todo 使用していない
 
         await ctx.send("妹「とっておきの問題を出してあげるね！」")
 
