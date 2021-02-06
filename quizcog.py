@@ -42,6 +42,8 @@ class QuizCog(commands.Cog):
                 name="create_list (history|science|etc...)", value="単語帳を作成する\n        e.q cl history", inline=False)
             embed.add_field(
                 name="get_in_list", value="単語帳からランダムな単語のwikipediaページを取得する\n        e.q gil", inline=False)
+            embed.add_field(
+                name="hint", value="現在取得しているwikipediaのタイトル単語の文字ヒントを出す\n        e.q hint (wo1|se2)", inline=False)
 
             await ctx.send(embed=embed)
 
@@ -88,8 +90,8 @@ class QuizCog(commands.Cog):
     @quiz_wikipedia.command(aliases=['one', 'o'])
     async def print_one_summary(self, ctx):
         """一行表示"""
-        one_line = self.wikipedia_page.summary  # まずサマリーを取得する
-        one_line = one_line[:one_line.find("\n")]  # 最初の改行が来るまでを取得する
+        s = self.wikipedia_page.summary  # まずサマリーを取得する
+        one_line = s[:s.find("\n")]  # 最初の改行が来るまでを取得する
 
         # 答えがそのまま記載されている場合が多いので、マスクする
         question_sentence = self.do_hide_words(one_line)

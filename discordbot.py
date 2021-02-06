@@ -20,6 +20,9 @@ class DiscordBot(commands.Bot):
         print("妹「お兄ちゃん、私はもう準備万端だよっ！」")
         print(discord.__version__)
 
+        activity = discord.Game(name="> e.help|トライボーディアン", type=0)
+        await bot.change_presence(status=discord.Status.online, activity=activity)
+
     async def on_command_error(self, ctx, error):
         """
         コマンドエラー時イベント

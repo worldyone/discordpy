@@ -29,8 +29,8 @@ class ImoutoCog(commands.Cog):
             return
 
         pips = [random.randint(1, surfaces) for _ in range(rolls)]
-        await ctx.send(f'妹「お兄ちゃん！サイコロ{"いっぱい"*(rolls>1)}振るよ！(コロコロー)」')
-        m = f'{" ".join(map(str, pips))}\nsum = {sum(pips)}'
+        await ctx.send(f'妹「お兄ちゃん！サイコロ{"いっぱい"*(rolls>2)}振るよ！(コロコロー)」')
+        m = f'{" ".join(map(str, pips))}\n' + (rolls>1)*f'sum = {sum(pips)}'
         await ctx.send(m)
 
     @commands.command()
@@ -55,6 +55,7 @@ class ImoutoCog(commands.Cog):
     @commands.command(aliases=['p'])
     async def pins_random(self, ctx):
         """ピン留めメッセージの中からランダムで一つ表示する"""
+        # todo 使用していない
 
         await ctx.send("妹「とっておきの問題を出してあげるね！」")
 

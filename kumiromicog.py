@@ -153,8 +153,8 @@ class KumiromiCog(commands.Cog):
     @reminder.command(aliases=['del', 'delete', 'remove'])
     async def reminder_delete(self, ctx, index: int = 0):
         """リマインドを削除する"""
-        # 引数が指定されなければ、リストを提示する
         if index == 0:
+            # 引数が指定されなければ、リストを提示する
             message = "クミロミ「消したい番号を選択してね…」\n  i.e. e.rem del 3\n"
             i = 1
             for time, memo in self.time_and_memos.items():
@@ -163,25 +163,23 @@ class KumiromiCog(commands.Cog):
             await ctx.send(message)
         else:
             # 選択された番号のリマインドを削除して、削除終えたリマインドリストを提示する
-            message = ""
-            i = print_i = 0
+            i = 0
             for time, memo in self.time_and_memos.items():
                 i += 1
                 if i == index:
-                    remove_time = time
-                    continue
-                print_i += 1
-                message += f'[{print_i}]: {time} , {memo}\n'
-            del self.time_and_memos[remove_time]
+                    del self.time_and_memos[time]
 
-            await ctx.send(message)
+            # 削除した後、リマインドリストの再表示
+            self.reminder_delete(ctx, 0)
+
 
     @reminder.command(aliases=['all_delete'])
     async def reminder_all_delete(self, ctx):
         """リマインドをすべて削除する"""
         self.time_and_memos.clear()
+        await ctx.send("クミロミ「すべて消したよ…すべてね…")
 
-    @commands.group(aliases=['tour', 'tt'])
+    @commands.group(aliases=['tour', 'tt', 'tnm'])
     async def tournament(self, ctx):
         """トーナメント機能
 
@@ -212,6 +210,9 @@ class KumiromiCog(commands.Cog):
         トーナメント機能のメイン処理
         設定されたメンバ・時間でトーナメントを開催する
         """
+
+        # リマインド機能の開始
+        self.reminder_start()
 
         player_comb = list(itertools.combinations(self.members, 2))  # 対局総組み合わせ
 
