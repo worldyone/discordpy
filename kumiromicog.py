@@ -153,8 +153,8 @@ class KumiromiCog(commands.Cog):
     @reminder.command(aliases=['del', 'delete', 'remove'])
     async def reminder_delete(self, ctx, index: int = 0):
         """リマインドを削除する"""
-        # 引数が指定されなければ、リストを提示する
         if index == 0:
+            # 引数が指定されなければ、リストを提示する
             message = "クミロミ「消したい番号を選択してね…」\n  i.e. e.rem del 3\n"
             i = 1
             for time, memo in self.time_and_memos.items():
@@ -177,6 +177,7 @@ class KumiromiCog(commands.Cog):
     async def reminder_all_delete(self, ctx):
         """リマインドをすべて削除する"""
         self.time_and_memos.clear()
+        await ctx.send("クミロミ「すべて消したよ…すべてね…")
 
     @commands.group(aliases=['tour', 'tt'])
     async def tournament(self, ctx):
