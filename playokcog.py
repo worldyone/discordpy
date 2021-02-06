@@ -1,9 +1,12 @@
 import discord
 from discord.ext import commands
 import time
-from selenium.webdriver import Chrome, ChromeOptions
+from selenium.webdriver import ChromeOptions
 import requests
 from bs4 import BeautifulSoup as bs4
+from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
+
 
 
 class PlayokCog(commands.Cog):
@@ -43,7 +46,8 @@ class PlayokCog(commands.Cog):
         # ヘッドレスモードを有効にする
         # options.add_argument('--headless')
         # ChromeのWebDriverオブジェクトを作成する。
-        driver = Chrome(options=options)
+        # driver = Chrome(options=options)
+        driver = webdriver.Chrome(ChromeDriverManager().install())
 
         # Webサイトにアクセスする
         if event in ["碁", "囲碁", "go"]:
@@ -177,7 +181,7 @@ class PlayokCog(commands.Cog):
         ki2_kifu = soup.text
 
         # 検討サイトを開く
-        driver = Chrome()
+        driver = webdriver.Chrome(ChromeDriverManager().install())
         driver.get('https://www.shogi-extend.com/adapter')
 
         # 棋譜入力エリアに棋譜を入力する
