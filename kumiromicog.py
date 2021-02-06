@@ -179,7 +179,7 @@ class KumiromiCog(commands.Cog):
         self.time_and_memos.clear()
         await ctx.send("クミロミ「すべて消したよ…すべてね…")
 
-    @commands.group(aliases=['tour', 'tt'])
+    @commands.group(aliases=['tour', 'tt', 'tnm'])
     async def tournament(self, ctx):
         """トーナメント機能
 
