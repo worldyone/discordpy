@@ -224,14 +224,12 @@ class KumiromiCog(commands.Cog):
             for event in self.events:  # 全種目
 
                 #先手後手の手番決定（中山実装部分）
-                #first_move：先手、second_move：後手
-                move = random.choice([[pl1,pl2],[pl2,pl1]])
-                first_move = move[0]
-                second_move = move[1]
+                #first_player:先手、second_player:後手
+                first_player, second_player = random.sample([pl1,pl2],2)
             
                 memo = pl1 + " と " + pl2 + \
                     " の " + event + " の対局開始時間です。" + "\n" + \
-                    "**先手**：" + first_move + "　**後手**：" + second_move + " になりました。"
+                    "**先手**：" + first_player + "　**後手**：" + second_player + " になりました。"
                 self.time_and_memos[targettime] = memo
                 targettime += timedelta(minutes=self.playtime)
 
