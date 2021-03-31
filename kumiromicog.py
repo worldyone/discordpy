@@ -223,10 +223,10 @@ class KumiromiCog(commands.Cog):
         for pl1, pl2 in player_comb:  # 対局者2人ずつ
             for event in self.events:  # 全種目
 
-                #先手後手の手番決定（中山実装部分）
-                #first_player:先手、second_player:後手
-                first_player, second_player = random.sample([pl1,pl2],2)
-            
+                # 先手後手の手番決定（中山実装部分）
+                # first_player:先手、second_player:後手
+                first_player, second_player = random.sample([pl1, pl2], 2)
+
                 memo = pl1 + " と " + pl2 + \
                     " の " + event + " の対局開始時間です。" + "\n" + \
                     "**先手**：" + first_player + "　**後手**：" + second_player + " になりました。"
@@ -249,6 +249,7 @@ class KumiromiCog(commands.Cog):
 
         await ctx.send(random.choice(self.MESSAGES_TOURNAMENT_START))
         await self.reminder_show(ctx)
+        await ctx.send('https://www.playok.com/')
 
     @tournament.command(aliases=['set', 'show', 'look', 'list'])
     async def tournament_set(self, ctx):
