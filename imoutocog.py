@@ -63,3 +63,29 @@ class ImoutoCog(commands.Cog):
         pin = random.choice(pins)
         message = await ctx.fetch_message(pin.id)
         await ctx.send(message.content)
+
+    @commands.command(aliases=['movemute', 'mm'])
+    async def move2mute_channel(self, ctx):
+        """ 議論用チャンネルに居るユーザー全員をミュート用休止チャンネルに移動させる """
+
+        guild = ctx.guild
+        discuss_channel = discord.utils.get(guild.channels, name="4discuss")
+        mute_channel = discord.utils.get(guild.channels, name="4mute")
+
+        members = discuss_channel.members
+        for member in members:
+            if not member.bot:
+                await member.move_to(mute_channel)
+
+    @commands.command(aliases=['movediscuss', 'md'])
+    async def move2active_channel(self, ctx):
+        """ ミュート用休止チャンネルに居るユーザー全員を議論用チャンネルに移動させる """
+
+        guild = ctx.guild
+        discuss_channel = discord.utils.get(guild.channels, name="4discuss")
+        mute_channel = discord.utils.get(guild.channels, name="4mute")
+
+        members = mute_channel.members
+        for member in members:
+            if not member.bot:
+                await member.move_to(discuss_channel)
