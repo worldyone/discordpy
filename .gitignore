@@ -103,3 +103,6 @@ venv.bak/
 # mypy
 .mypy_cache/
 test.py
+
+# 仮想環境
+/discordbotapp

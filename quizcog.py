@@ -3,6 +3,7 @@ from discord.ext import commands
 import random
 import wikipedia
 import requests
+import urllib
 from bs4 import BeautifulSoup as bs4
 
 
@@ -26,6 +27,8 @@ class QuizCog(commands.Cog):
             )
 
             embed.add_field(
+                name="game", value="wikipediaクイズをする\n        e.q game", inline=False)
+            embed.add_field(
                 name="get", value="wikipediaからランダムなページを取得する\n        e.q get", inline=False)
             embed.add_field(
                 name="one", value="取得中のwikipediaページの一行目を表示する\n        e.q one", inline=False)
@@ -43,11 +46,17 @@ class QuizCog(commands.Cog):
             embed.add_field(
                 name="get_in_list", value="単語帳からランダムな単語のwikipediaページを取得する\n        e.q gil", inline=False)
             embed.add_field(
-                name="hint", value="現在取得しているwikipediaのタイトル単語の文字ヒントを出す\n        e.q hint (wo1|se2)", inline=False)
+                name="hint", value="現在取得しているwikipediaのタイトル単語の文字ヒントを出す\n        e.q hint (wo1|se2|pv)", inline=False)
 
             await ctx.send(embed=embed)
 
-    @quiz_wikipedia.command(aliases=['get', 'g'])
+    @quiz_wikipedia.command(aliases=['game'])
+    async def play_wikipedia_quiz(self, ctx):
+        await self.get_random_wikipedia_page(ctx)
+        await ctx.send("妹「サマリーを伏字で読み上げるから分かったら答えてね！」\n ---- \n")
+        await self.print_one_summary(ctx)
+
+    @quiz_wikipedia.command(aliases=['get'])
     async def get_random_wikipedia_page(self, ctx):
         """wikipediaからランダムな記事を一つ取得する"""
 
@@ -105,7 +114,7 @@ class QuizCog(commands.Cog):
         question_sentence = self.do_hide_words(summary)
         await ctx.send(question_sentence)
 
-    @quiz_wikipedia.command(aliases=['answer', 'title', 'a'])
+    @quiz_wikipedia.command(aliases=['answer', 'title'])
     async def print_answer(self, ctx, spoiler=False):
         """答え表示"""
         await ctx.send(f'妹「答えは「**{"||"*spoiler}{self.wikipedia_page.title}{"||"*spoiler}**」だよ！」')
@@ -123,6 +132,9 @@ class QuizCog(commands.Cog):
 
     @quiz_wikipedia.command(aliases=['hint'])
     async def print_hint(self, ctx, key: str):
+        if not self.wikipedia_page:
+            return
+
         if key.startswith("wo"):
             word_position = int(key[2:])
             await ctx.send(f'妹「{word_position}文字目は「{self.wikipedia_page.title[word_position - 1]}」だよ！」')
@@ -131,7 +143,19 @@ class QuizCog(commands.Cog):
             s1 = se2.find("\n")
             se2 = se2[s1: se2.find("\n", s1 + 1)]
             se2 = self.do_hide_words(se2)
-            await ctx.send("妹「サマリーの二行目は\n「" + se2 + "\n」だよ！」")
+            if se2:
+                await ctx.send("妹「サマリーの二行目は\n「" + se2 + "\n」だよ！」")
+            else:
+                await ctx.send("妹「サマリーの二行目はなかったよ！」")
+        if key == 'pv':
+            encode_title = urllib.parse.quote(self.wikipedia_page.title)
+            url = f'https://ja.wikipedia.org/w/index.php?title={encode_title}&action=info'
+            page = requests.get(url)
+            soup = bs4(page.content, 'lxml')
+            pv_class = soup.find(class_='mw-pvi-month')
+            await ctx.send(f"妹「過去30日間の閲覧数は {pv_class.string} だよ！」")
+        if key == 'cat':
+            await ctx.send(self.wikipedia_page.categories)
 
     @quiz_wikipedia.command(aliases=['cl', 'create_list'])
     async def create_wordlist(self, ctx, target: str):
