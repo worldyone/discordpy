@@ -50,11 +50,31 @@ class QuizCog(commands.Cog):
 
             await ctx.send(embed=embed)
 
-    @quiz_wikipedia.command(aliases=['game'])
+    @quiz_wikipedia.command(aliases=['game', 'play'])
     async def play_wikipedia_quiz(self, ctx):
         await self.get_random_wikipedia_page(ctx)
-        await ctx.send("妹「サマリーを伏字で読み上げるから分かったら答えてね！」\n ---- \n")
+        await ctx.send("妹「サマリーを伏字で読み上げるから分かったら答えてね！」\n ----")
         await self.print_one_summary(ctx)
+        await self.print_hint(ctx, 'pv')
+        await ctx.send("妹「答えを内緒で教えるね！」")
+        await self.print_answer(ctx, spoiler=True)
+
+    @quiz_wikipedia.command(aliases=['easygame'])
+    async def play_wikipedia_quiz_easy(self, ctx, need_pv = 200):
+        pv = 0
+        while True:
+            await self.get_random_wikipedia_page(ctx)
+            pv = int(str(self.get_pv()).replace(",", ""))
+            if pv > need_pv:
+                await ctx.send("妹「良い問題を見つけたよ！」")
+                break
+            await ctx.send("妹「だけど、あんまり良い問題じゃないかも…。もう一度探してくるね！」")
+
+        await ctx.send("妹「サマリーを伏字で読み上げるから分かったら答えてね！」\n ----")
+        await self.print_one_summary(ctx)
+        await self.print_hint(ctx, 'pv')
+        await ctx.send("妹「答えを内緒で教えるね！」")
+        await self.print_answer(ctx, spoiler=True)
 
     @quiz_wikipedia.command(aliases=['get'])
     async def get_random_wikipedia_page(self, ctx):
@@ -68,7 +88,7 @@ class QuizCog(commands.Cog):
 
         await ctx.send("妹「ランダムな記事を取ってきたよ！」")
 
-    def do_hide_words(self, s: str):
+    def do_hide_words(self, s: str, mask_word: str = "**ANSWER**"):
         """答えがそのまま記載されている場合が多いので、マスクする"""
 
         hide_words = [self.wikipedia_page.title]
@@ -92,7 +112,7 @@ class QuizCog(commands.Cog):
 
         # **ANSWER**でマスクする
         for hide_word in hide_words:
-            s = s.replace(hide_word, "**ANSWER**")
+            s = s.replace(hide_word, mask_word)
 
         return s
 
@@ -148,14 +168,18 @@ class QuizCog(commands.Cog):
             else:
                 await ctx.send("妹「サマリーの二行目はなかったよ！」")
         if key == 'pv':
-            encode_title = urllib.parse.quote(self.wikipedia_page.title)
-            url = f'https://ja.wikipedia.org/w/index.php?title={encode_title}&action=info'
-            page = requests.get(url)
-            soup = bs4(page.content, 'lxml')
-            pv_class = soup.find(class_='mw-pvi-month')
-            await ctx.send(f"妹「過去30日間の閲覧数は {pv_class.string} だよ！」")
+            pv = self.get_pv()
+            await ctx.send(f"妹「過去30日間の閲覧数は {pv} だよ！」")
         if key == 'cat':
             await ctx.send(self.wikipedia_page.categories)
+
+    def get_pv(self):
+        encode_title = urllib.parse.quote(self.wikipedia_page.title)
+        url = f'https://ja.wikipedia.org/w/index.php?title={encode_title}&action=info'
+        page = requests.get(url)
+        soup = bs4(page.content, 'lxml')
+        pv_class = soup.find(class_='mw-pvi-month')
+        return pv_class.string
 
     @quiz_wikipedia.command(aliases=['cl', 'create_list'])
     async def create_wordlist(self, ctx, target: str):
