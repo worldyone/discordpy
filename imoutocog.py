@@ -13,6 +13,7 @@ class ImoutoCog(commands.Cog):
     async def hello(self, ctx):
         """挨拶"""
         await ctx.send('妹「お兄ちゃん！お兄ちゃん！お兄ちゃん！」')
+        print("妹「お兄ちゃん！」")
 
     @commands.command()
     async def add(self, ctx, a: int, b: int):
