@@ -62,13 +62,21 @@ class QuizCog(commands.Cog):
     @quiz_wikipedia.command(aliases=['easygame'])
     async def play_wikipedia_quiz_easy(self, ctx, need_pv = 200):
         pv = 0
+        ttl = 5
         while True:
+            ttl -= 1
             await self.get_random_wikipedia_page(ctx)
             pv = int(str(self.get_pv()).replace(",", ""))
             if pv > need_pv:
                 await ctx.send("妹「良い問題を見つけたよ！」")
                 break
+            if ttl <= 0:
+                await ctx.send("妹「だけど、あんまり良い問題じゃないかも…。」")
+                await ctx.send(self.wikipedia_page.title)
+                await ctx.send("妹「全然良い問題見つかられなかった…。ごめんね、お兄ちゃん...」")
+                return
             await ctx.send("妹「だけど、あんまり良い問題じゃないかも…。もう一度探してくるね！」")
+            await ctx.send(self.wikipedia_page.title)
 
         await ctx.send("妹「サマリーを伏字で読み上げるから分かったら答えてね！」\n ----")
         await self.print_one_summary(ctx)
@@ -84,7 +92,13 @@ class QuizCog(commands.Cog):
         await ctx.send("妹は中空に手を翳し、何かを掴むような動作をしている。")
 
         # 日本語wikipediaからランダムな単語を一つ決めてページを取得する
-        self.wikipedia_page = wikipedia.page(wikipedia.random())
+        while True:
+            try:
+                self.wikipedia_page = wikipedia.page(wikipedia.random())
+                break
+            except wikipedia.exceptions.DisambiguationError as e:
+                # 曖昧さ回避のページを取得してしまった場合
+                continue
 
         await ctx.send("妹「ランダムな記事を取ってきたよ！」")
 
@@ -118,8 +132,8 @@ class QuizCog(commands.Cog):
 
     @quiz_wikipedia.command(aliases=['one', 'o'])
     async def print_one_summary(self, ctx):
-        """一行表示"""
-        s = self.wikipedia_page.summary  # まずサマリーを取得する
+        """サマリーの一行目を表示"""
+        s = self.wikipedia_page.summary  # サマリーを取得する
         one_line = s[:s.find("\n")]  # 最初の改行が来るまでを取得する
 
         # 答えがそのまま記載されている場合が多いので、マスクする
@@ -147,7 +161,12 @@ class QuizCog(commands.Cog):
     @quiz_wikipedia.command(aliases=['find', 'page'])
     async def get_wikipedia_page(self, ctx, target_word: str):
         """指定した単語のwikipediaページを取得する"""
-        self.wikipedia_page = wikipedia.page(target_word)
+        try:
+            self.wikipedia_page = wikipedia.page(target_word)
+        except wikipedia.exceptions.DisambiguationError as e:
+            await ctx.send("妹「あっ、書き損じしちゃってた…。」妹は消しゴムを取り出した。")
+            return
+
         await ctx.send("妹「調べてきたよ！お兄ちゃん！」")
 
     @quiz_wikipedia.command(aliases=['hint'])
@@ -187,8 +206,13 @@ class QuizCog(commands.Cog):
         await ctx.send("妹は懸命にペンを動かしている。")
         if target == 'history':
             self.wordlist = self.get_history_words()
-        if target == 'science':
+        elif target == 'science':
             self.wordlist = self.get_science_words()
+        elif target == 'wiki':
+            self.wordlist = self.get_wikipedia_random_10words()
+        else:
+            await ctx.send("妹「ごめんね、お兄ちゃん。上手く作れなかった…」")
+            return
 
         await ctx.send("妹「単語帳を作成したよ！」")
 
@@ -216,18 +240,49 @@ class QuizCog(commands.Cog):
 
         return words
 
-    @quiz_wikipedia.command(aliases=['gil', 'get_in_list'])
+    def get_wikipedia_random_10words(self):
+        """wikipediaからランダムで10個単語を選んだ単語帳を作成する"""
+
+        words = [wikipedia.random() for _ in range(10)]
+        return words
+
+    @quiz_wikipedia.command(aliases=['add'])
+    async def add_wordlist(self, ctx, target: str):
+        """wordlistに単語を追加する。csv対応。"""
+        words = target.split(",")
+        self.wordlist.extend(words)
+
+    @quiz_wikipedia.command(aliases=['gol', 'get_out_of_list'])
     async def get_wikipedia_page_for_wordlist(self, ctx):
         """作成した単語帳からランダムで単語を選び、その単語でwikipediaのページを取得する"""
 
         await ctx.send("妹「単語帳から適当に問題に出すね！」")
-        random_word = random.choice(self.wordlist)
-        self.wikipedia_page = wikipedia.page(random_word)
+        if not self.wordlist:
+            await ctx.send("妹「単語帳をまだ作ってないよ！お兄ちゃん！」")
+            return
+        random_word = self.wordlist.pop(random.randrange(len(self.wordlist)))
+        try:
+            self.wikipedia_page = wikipedia.page(random_word)
+        except wikipedia.exceptions.DisambiguationError as e:
+            await ctx.send("妹「あっ、書き損じしちゃってた…。」妹は消しゴムを取り出した。")
+            return
         await ctx.send("妹は問題を書きとめ、あなたからの質問に応える気が十分なようだ")
 
-    @quiz_wikipedia.command(aliases=['d_show_wordlist'])
+    @quiz_wikipedia.command(aliases=['wordlist'])
     async def show_wordlist(self, ctx):
-        """デバッグ用。wordlistを見る
+        """wordlistを見る Discordの出力文字数限界が2000なので、2000未満の表示とする"""
+        if not self.wordlist:
+            await ctx.send("妹「単語帳をまだ作ってなかったよ！お兄ちゃん！」")
+            return
+        print(", ".join(self.wordlist)[:1000])
+        await ctx.send("\r\n".join(self.wordlist)[:1000])
 
-        Discordの出力文字数限界が2000なので、2000未満の表示とする"""
-        print(", ".join(self.wordlist)[:1000] + "...")
+    @quiz_wikipedia.command(aliases=['prepare'])
+    async def prepare_word_order_exercise_game(self, ctx):
+        await self.create_wordlist(ctx, 'wiki')
+        await self.show_wordlist(ctx)
+
+    @quiz_wikipedia.command(aliases=['next'])
+    async def next_word_order_exercise_game(self, ctx):
+        await self.get_wikipedia_page_for_wordlist(ctx)
+        await self.print_summary(ctx)
